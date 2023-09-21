@@ -13,11 +13,11 @@ public:
     ///                               Métodos Constructores                                 ///
     // --------------------------------------------------------------------------------------//
 
+    Vuelo();
+
     Vuelo(const bool & cabotaje, const double & distancia);
 
     Vuelo(const Vuelo & otroVuelo);
-
-    Vuelo();
 
     ~Vuelo();
 

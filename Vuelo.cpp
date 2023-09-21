@@ -2,7 +2,7 @@
 
 // --------------------------------------------------------------------------------------------- //
 
-Vuelo::Vuelo(const bool & cabotaje, const double & distancia)
+Vuelo::Vuelo(const bool &cabotaje, const double &distancia)
 {
     this->cabotaje = cabotaje;
     this->distancia = distancia;
@@ -12,13 +12,13 @@ Vuelo::Vuelo(const bool & cabotaje, const double & distancia)
 
 Vuelo::~Vuelo()
 {
-    // Vacío el mapa de aerolíneas y sus respectivas reservas.
+    // Vacï¿½o el mapa de aerolï¿½neas y sus respectivas reservas.
     vuelos.clear();
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-Vuelo::Vuelo(const Vuelo & otroVuelo)
+Vuelo::Vuelo(const Vuelo &otroVuelo)
 {
     *this = otroVuelo;
 }
@@ -33,7 +33,7 @@ Vuelo::Vuelo()
 
 // --------------------------------------------------------------------------------------------- //
 
-Vuelo & Vuelo::operator = (const Vuelo & otroVuelo)
+Vuelo &Vuelo::operator=(const Vuelo &otroVuelo)
 {
     this->cabotaje = otroVuelo.esCabotaje();
     this->distancia = otroVuelo.verDistancia();
@@ -62,11 +62,11 @@ unsigned int Vuelo::verCantidadVuelos() const
 
 // --------------------------------------------------------------------------------------------- //
 
-void Vuelo::verAerolineas(std::list<std::string> & aerolineas) const
+void Vuelo::verAerolineas(std::list<std::string> &aerolineas) const
 {
     auto it = vuelos.begin();
 
-    // Recorro el mapa, agregando el nombre de la aerolínea a la lista a retornar.
+    // Recorro el mapa, agregando el nombre de la aerolï¿½nea a la lista a retornar.
     while (it != vuelos.end())
     {
         aerolineas.push_back((it->first));
@@ -91,15 +91,15 @@ bool Vuelo::esCabotaje() const
 
 // --------------------------------------------------------------------------------------------- //
 
-unsigned int Vuelo::verAsientosLibres(const std::string & aerolinea) const
+unsigned int Vuelo::verAsientosLibres(const std::string &aerolinea) const
 {
     // Inicializo los asientos disponibles en 0
     unsigned int asientos_disponibles = 0;
 
-    // Busco la aerolínea de la que quiero obtener los asientos libres.
+    // Busco la aerolï¿½nea de la que quiero obtener los asientos libres.
     auto it = vuelos.find(aerolinea);
 
-    // Si encontré la aerolínea, calculo los asientos disponibles.
+    // Si encontrï¿½ la aerolï¿½nea, calculo los asientos disponibles.
     if (it != vuelos.end())
     {
         asientos_disponibles = (it->second).totales - (it->second).reservados;
@@ -111,15 +111,26 @@ unsigned int Vuelo::verAsientosLibres(const std::string & aerolinea) const
 
 // --------------------------------------------------------------------------------------------- //
 
-unsigned int Vuelo::verAsientosTotales(const std::string & aerolinea) const
+bool Vuelo::existeAerolinea(const std::string &aerolinea) const
+{
+    // Busco la aerolÃ­nea de la que quiero obtener los asientos libres.
+    auto it = vuelos.find(aerolinea);
+
+    // Retorno si logrÃ© obtener un iterador a ella.
+    return (it != vuelos.end());
+}
+
+// --------------------------------------------------------------------------------------------- //
+
+unsigned int Vuelo::verAsientosTotales(const std::string &aerolinea) const
 {
     // Inicializo los asientos disponibles en 0
     unsigned int asientos_totales = 0;
 
-    // Busco la aerolínea de la que quiero obtener los asientos libres.
+    // Busco la aerolï¿½nea de la que quiero obtener los asientos libres.
     auto it = vuelos.find(aerolinea);
 
-    // Si encontré la aerolínea, calculo los asientos disponibles.
+    // Si encontrï¿½ la aerolï¿½nea, calculo los asientos disponibles.
     if (it != vuelos.end())
     {
         asientos_totales = (it->second).totales;
@@ -131,15 +142,15 @@ unsigned int Vuelo::verAsientosTotales(const std::string & aerolinea) const
 
 // --------------------------------------------------------------------------------------------- //
 
-unsigned int Vuelo::verAsientosReservados(const std::string & aerolinea) const
+unsigned int Vuelo::verAsientosReservados(const std::string &aerolinea) const
 {
     // Inicializo los asientos disponibles en 0
     unsigned int asientos_reservados = 0;
 
-    // Busco la aerolínea de la que quiero obtener los asientos libres.
+    // Busco la aerolï¿½nea de la que quiero obtener los asientos libres.
     auto it = vuelos.find(aerolinea);
 
-    // Si encontré la aerolínea, obtengo los asientos reservados.
+    // Si encontrï¿½ la aerolï¿½nea, obtengo los asientos reservados.
     if (it != vuelos.end())
     {
         asientos_reservados = (it->second).reservados;
@@ -151,12 +162,12 @@ unsigned int Vuelo::verAsientosReservados(const std::string & aerolinea) const
 
 // --------------------------------------------------------------------------------------------- //
 
-void Vuelo::modificarAsientosReservados(const std::string & aerolinea, const unsigned int & reservas)
+void Vuelo::modificarAsientosReservados(const std::string &aerolinea, const unsigned int &reservas)
 {
-    // Busca la struct reservas de la aerolínea cuyos asientos se quieren modificar.
+    // Busca la struct reservas de la aerolï¿½nea cuyos asientos se quieren modificar.
     auto it = vuelos.find(aerolinea);
 
-    // Si la encuentra, cambia el número de asientos reservados.
+    // Si la encuentra, cambia el nï¿½mero de asientos reservados.
     if (it != vuelos.end())
         (it->second).reservados = reservas;
 
@@ -165,8 +176,8 @@ void Vuelo::modificarAsientosReservados(const std::string & aerolinea, const uns
 
 // --------------------------------------------------------------------------------------------- //
 
-void Vuelo::agregarAerolinea(const std::string & nombreAerolinea, const unsigned int & asientosTotales,
-                             const unsigned int & asientosReservados)
+void Vuelo::agregarAerolinea(const std::string &nombreAerolinea, const unsigned int &asientosTotales,
+                             const unsigned int &asientosReservados)
 {
     asientos asientosNuevoVuelo;
 

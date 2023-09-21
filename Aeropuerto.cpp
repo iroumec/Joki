@@ -4,13 +4,11 @@
 
 Aeropuerto::Aeropuerto()
 {
-
 }
 
-Aeropuerto::Aeropuerto(const unsigned int & id, const std::string & nombre, const std::string & ciudad, const std::string & pais)
+Aeropuerto::Aeropuerto(const std::string &nombre, const std::string &ciudad, const std::string &pais)
 {
     // Cargo los datos del aeropuerto.
-    this->id = id;
     this->nombre = nombre;
     this->ciudad = ciudad;
     this->pais = pais;
@@ -20,7 +18,6 @@ Aeropuerto::Aeropuerto(const unsigned int & id, const std::string & nombre, cons
 
 Aeropuerto::~Aeropuerto()
 {
-
 }
 
 // --------------------------------------------------------------------------------------------- //
@@ -42,11 +39,4 @@ std::string Aeropuerto::verCiudad() const
 std::string Aeropuerto::verPais() const
 {
     return pais;
-}
-
-// --------------------------------------------------------------------------------------------- //
-
-unsigned int Aeropuerto::verId() const
-{
-    return id;
 }

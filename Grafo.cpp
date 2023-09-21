@@ -5,13 +5,15 @@
 /**                                   ImplementaciÛn - Arco                                      **/
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> Grafo<C>::Arco::Arco()
+template <typename C>
+Grafo<C>::Arco::Arco()
 {
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> Grafo<C>::Arco::Arco(int adyacente, const C & costo)
+template <typename C>
+Grafo<C>::Arco::Arco(string adyacente, const C &costo)
 {
     // El atributo vÈrtice se torna el pasado por par·metro.
     vertice = adyacente;
@@ -22,7 +24,8 @@ template <typename C> Grafo<C>::Arco::Arco(int adyacente, const C & costo)
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> int Grafo<C>::Arco::devolver_adyacente() const
+template <typename C>
+string Grafo<C>::Arco::devolver_adyacente() const
 {
     // Devuelvo el nombre del vÈrtice adyacente.
     return vertice;
@@ -30,7 +33,8 @@ template <typename C> int Grafo<C>::Arco::devolver_adyacente() const
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::Arco::nuevo_costo(const C & costo)
+template <typename C>
+void Grafo<C>::Arco::nuevo_costo(const C &costo)
 {
     // El atributo costo toma el valor del par·metro.
     this->costo = costo;
@@ -38,7 +42,8 @@ template <typename C> void Grafo<C>::Arco::nuevo_costo(const C & costo)
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> const C & Grafo<C>::Arco::devolver_costo() const
+template <typename C>
+const C &Grafo<C>::Arco::devolver_costo() const
 {
     // Retorno el atributo costo del arco.
     return costo;
@@ -48,13 +53,15 @@ template <typename C> const C & Grafo<C>::Arco::devolver_costo() const
 /**                                 ImplementaciÛn - Grafo                                       **/
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> Grafo<C>::Grafo()
+template <typename C>
+Grafo<C>::Grafo()
 {
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> Grafo<C>::Grafo(const Grafo & otroGrafo)
+template <typename C>
+Grafo<C>::Grafo(const Grafo &otroGrafo)
 {
     // Copio los valores del grafo actual al que se pasa por par·metro.
     *this = otroGrafo;
@@ -62,7 +69,8 @@ template <typename C> Grafo<C>::Grafo(const Grafo & otroGrafo)
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> Grafo<C>::~Grafo()
+template <typename C>
+Grafo<C>::~Grafo()
 {
     // VacÌo el mapa con el que represento al grafo.
     graph.clear();
@@ -70,10 +78,11 @@ template <typename C> Grafo<C>::~Grafo()
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> Grafo<C> & Grafo<C>::operator = (const Grafo & otroGrafo)
+template <typename C>
+Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo)
 {
     // Obtengo una lista con los vÈrtices del grafo.
-    list<int> vertices;
+    list<string> vertices;
     otroGrafo.devolver_vertices(vertices);
     auto it = vertices.begin();
 
@@ -99,7 +108,8 @@ template <typename C> Grafo<C> & Grafo<C>::operator = (const Grafo & otroGrafo)
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> bool Grafo<C>::esta_vacio() const
+template <typename C>
+bool Grafo<C>::esta_vacio() const
 {
     // Retorno si el mapa est· vacÌo.
     return graph.empty();
@@ -107,34 +117,37 @@ template <typename C> bool Grafo<C>::esta_vacio() const
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> int Grafo<C>::devolver_longitud() const
+template <typename C>
+int Grafo<C>::devolver_longitud() const
 {
-    // Devuelve el n˙mero de elementos del mapa.
+    // Devuelve el nùmero de elementos del mapa.
     return graph.size();
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> bool Grafo<C>::existe_vertice(int vertice) const
+template <typename C>
+bool Grafo<C>::existe_vertice(string vertice) const
 {
-    // Busco el vÈrtice.
+    // Busco el vùrtice.
     auto it = graph.find(vertice);
 
-    // Si lo encontrÈ (TRUE),  el iterador ser· diferente al elemento teÛrico que le sigue al
-    // ˙ltimo del mapa.
+    // Si lo encontrù (TRUE),  el iterador serù diferente al elemento teùrico que le sigue al
+    // ùltimo del mapa.
     return (it != graph.end());
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> bool Grafo<C>::existe_arco(int origen, int destino) const
+template <typename C>
+bool Grafo<C>::existe_arco(string origen, string destino) const
 {
     bool found = false;
 
-    // Obtengo un iterador al vÈrtice de origen.
+    // Obtengo un iterador al vùrtice de origen.
     auto it = graph.find(origen);
 
-    // Si encontrÈ el vÈrtice...
+    // Si encontrù el vùrtice...
     if (it != graph.end())
     {
         // Obtengo un iterador al comienzo de la lista de arcos.
@@ -143,7 +156,7 @@ template <typename C> bool Grafo<C>::existe_arco(int origen, int destino) const
         // Mientras no se acabe la lista y no haya encontrado el arco...
         while ((they != (it->second).end()) && not(found))
         {
-            // Si el destino es igual al que busco, lo encontrÈ.
+            // Si el destino es igual al que busco, lo encontrù.
             if (they->devolver_adyacente() == destino)
                 found = true;
             they++;
@@ -155,20 +168,19 @@ template <typename C> bool Grafo<C>::existe_arco(int origen, int destino) const
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> const C & Grafo<C>::costo_arco(int origen, int destino) const
+template <typename C>
+const C &Grafo<C>::costo_arco(string origen, string destino) const
 {
-    // Obtengo un iterador al vÈrtice de origen.
-    std::cout << origen;
-
+    // Obtengo un iterador al vùrtice de origen.
     auto it = graph.find(origen);
 
-    // Si no encuentro el vÈrtice de origen...
+    // Si no encuentro el vùrtice de origen...
     assert(it != graph.end());
 
-    // Obtengo un iterador a la lista de adyacentes del vÈrtice
+    // Obtengo un iterador a la lista de adyacentes del vùrtice
     auto they = (it->second).begin();
 
-    // Itero sobre la lista de arcos, buscando el vÈrtice destino.
+    // Itero sobre la lista de arcos, buscando el vùrtice destino.
     while ((they != (it->second).end()) && they->devolver_adyacente() != destino)
         they++;
 
@@ -181,12 +193,13 @@ template <typename C> const C & Grafo<C>::costo_arco(int origen, int destino) co
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::devolver_vertices(list<int> & vertices) const
+template <typename C>
+void Grafo<C>::devolver_vertices(list<string> &vertices) const
 {
     // Obtengo un iterador al comienzo del mapa.
     auto it = graph.begin();
 
-    // Lo recorro, agregando los vÈrtices a la lista.
+    // Lo recorro, agregando los vùrtices a la lista.
     while (it != graph.end())
     {
         vertices.push_back(it->first);
@@ -196,15 +209,16 @@ template <typename C> void Grafo<C>::devolver_vertices(list<int> & vertices) con
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::devolver_adyacentes(int origen, list<Arco> & adyacentes) const
+template <typename C>
+void Grafo<C>::devolver_adyacentes(string origen, list<Arco> &adyacentes) const
 {
-    // Obtengo un iterador al vÈrtice
+    // Obtengo un iterador al vùrtice
     auto it = graph.find(origen);
 
-    // Si encuentro el vÈrtice de origen...
+    // Si encuentro el vùrtice de origen...
     if (it != graph.end())
     {
-        // Obtengo un iterador a la lista de adyacentes del vÈrtice.
+        // Obtengo un iterador a la lista de adyacentes del vùrtice.
         auto they = (it->second).begin();
 
         // La recorro y guardo los arcos,
@@ -218,21 +232,23 @@ template <typename C> void Grafo<C>::devolver_adyacentes(int origen, list<Arco> 
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::agregar_vertice(int vertice)
+template <typename C>
+void Grafo<C>::agregar_vertice(string vertice)
 {
     list<Arco> adyacentes;
 
-    // Cargo en el mapa el vÈrtice como clave y la lista de adyacentes vacÌa como valor.
+    // Cargo en el mapa el vùrtice como clave y la lista de adyacentes vacùa como valor.
     graph.insert({vertice, adyacentes});
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::eliminar_vertice(int vertice)
+template <typename C>
+void Grafo<C>::eliminar_vertice(string vertice)
 {
     auto it = graph.begin();
 
-    // Elimino los arcos que haya de otros vÈrtices al que quiero eliminar.
+    // Elimino los arcos que haya de otros vùrtices al que quiero eliminar.
     while (it != graph.end())
     {
         if ((it->first) != vertice)
@@ -240,17 +256,18 @@ template <typename C> void Grafo<C>::eliminar_vertice(int vertice)
         it++;
     }
 
-    // Eliminando el vÈrtice, ya elimino los arcos de Èl a los dem·s;
-    // pero no los de los dem·s a Èl. Por eso el bucle de arriba.
+    // Eliminando el vùrtice, ya elimino los arcos de ùl a los demùs;
+    // pero no los de los demùs a ùl. Por eso el bucle de arriba.
     graph.erase(vertice);
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::modificar_costo_arco(int origen, int destino, const C & costo)
+template <typename C>
+void Grafo<C>::modificar_costo_arco(string origen, string destino, const C &costo)
 {
     // Obtengo un iterador a la posiciÛn donde se halle la clave del par·metro origen
-    auto it = graph.find(origen); // Si no agregaba un "typename" al principio, no funcionaba
+    auto it = graph.find(origen);
 
     bool found = false;
 
@@ -261,12 +278,12 @@ template <typename C> void Grafo<C>::modificar_costo_arco(int origen, int destin
         auto they = (it->second).begin();
 
         // Recorro la lista hasta encontrar la posiciÛn en la que est· el adyacentee que busco
-        while ((they != (it->second).end()) && (not (found)))
+        while ((they != (it->second).end()) && (not(found)))
         {
             if (they->devolver_adyacente() == destino)
                 found = true;
             else
-              they++;
+                they++;
         }
 
         // Si lo encontrÈ, remplazo el costo
@@ -277,18 +294,20 @@ template <typename C> void Grafo<C>::modificar_costo_arco(int origen, int destin
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::agregar_arco(int origen, int destino, const C & costo)
+template <typename C>
+void Grafo<C>::agregar_arco(string origen, string destino, const C &costo)
 {
     // Inicializo un objeto de la clase arco.
     Arco edge(destino, costo);
 
-    // Lo agrego a la lista de arcos del vÈrtice origen.
+    // Lo agrego a la lista de arcos del vùrtice origen.
     graph[origen].push_back(edge);
 }
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::eliminar_arco(int origen, int destino)
+template <typename C>
+void Grafo<C>::eliminar_arco(string origen, string destino)
 {
     // Busco un iterador al elemento que quiero eliminar
     auto it = graph.find(origen);
@@ -301,14 +320,14 @@ template <typename C> void Grafo<C>::eliminar_arco(int origen, int destino)
         // Obtengo un iterador al comienzo de la lista de arcos...
         auto they = (it->second).begin();
 
-        // Recorro la lista de arcos hasta encontrar el vÈrtice adyacente que busco.
-        while ((they != (it->second).end()) && (not (found)))
+        // Recorro la lista de arcos hasta encontrar el vùrtice adyacente que busco.
+        while ((they != (it->second).end()) && (not(found)))
         {
             // Si es igual, lo encontre.
             if (they->devolver_adyacente() == destino)
                 found = true;
             else
-              they++;
+                they++;
         }
 
         // De haberlo hallado, lo elimino.
@@ -319,9 +338,10 @@ template <typename C> void Grafo<C>::eliminar_arco(int origen, int destino)
 
 // --------------------------------------------------------------------------------------------- //
 
-template <typename C> void Grafo<C>::vaciar()
+template <typename C>
+void Grafo<C>::vaciar()
 {
-    // VacÌo el mapa con los vÈrtices.
+    // Vacùo el mapa con los vùrtices.
     graph.clear();
 }
 
