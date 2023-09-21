@@ -1,0 +1,74 @@
+# depslib dependency file v1.0
+1693872786 source:c:\users\federico\documents\unicen\algoritmos ii\tpe_2023\tpe\main.cpp
+	<iostream>
+	<fstream>
+
+1694654744 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe\main.cpp
+	<iostream>
+	<fstream>
+	<locale.h>
+	<map>
+	<string.h>
+	"Grafo.h"
+	"colors.h"
+
+1694654793 c:\users\inaki\onedrive\documentos\codeblocks\tpe\include\grafo.h
+	<list>
+	<map>
+	<set>
+
+1694648453 c:\users\inaki\onedrive\documentos\codeblocks\tpe\include\colors.h
+
+1695238076 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\aeropuerto.cpp
+	"Aeropuerto.h"
+
+1695238088 c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\include\aeropuerto.h
+	<string>
+
+1695162034 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\minheap.cpp
+	"MinHeap.h"
+
+1695162002 c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\include\minheap.h
+	<iostream>
+	<vector>
+
+1695159557 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\sets.cpp
+	<cassert>
+	"Sets.h"
+
+1695158588 c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\include\sets.h
+
+1695237582 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\vuelo.cpp
+	"Vuelo.h"
+
+1695237531 c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\include\vuelo.h
+	<map>
+	<list>
+	<string>
+
+1695238813 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\grafo.cpp
+	"Grafo.h"
+	<cassert>
+
+1695229683 c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\include\grafo.h
+	<iostream>
+	<list>
+	<map>
+	"Vuelo.h"
+	<cassert>
+
+1695238845 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\main.cpp
+	<iostream>
+	<fstream>
+	<locale.h>
+	<map>
+	<list>
+	<vector>
+	<string.h>
+	"Vuelo.h"
+	"Grafo.h"
+	"Colors.h"
+	"Aeropuerto.h"
+
+1694648453 c:\users\inaki\onedrive\documentos\codeblocks\tpe v2\include\colors.h
+
