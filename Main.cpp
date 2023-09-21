@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <locale>
+#include <chrono>
+#include <thread>
 
 #include <map>
 #include <list>
@@ -23,8 +25,12 @@ void cargar_aeropuertos_rutas(string path);
 void cargar_rutas(string path);
 
 void desplegar_menu();
+void desplegar_apartado_archivos();
 
-void listar_aeropuertos();
+void mostrar_archivo(string path);
+void generar_listado_aeropuertos(string path);
+void mostrar_listado_aeropuertos(string path);
+
 void listar_reservas();
 void existe_vuelo_directo();
 
@@ -228,9 +234,10 @@ void desplegar_menu()
              << CYAN << "1. " << RESET << "Listar todos los aeropuertos" << endl
              << CYAN << "2. " << RESET << "Listar todas las reservas realizadas" << endl
              << CYAN << "3. " << RESET << "Verificar si existe un vuelo directo" << endl
-             << CYAN << "4. " << RESET << "Obtener todos los vuelos a través de una misma aerolínea" << endl
+             << CYAN << "4. " << RESET << L"Obtener todos los vuelos a través de una misma aerolínea" << endl
              << CYAN << "5. " << RESET << "Circuito de aeropuertos" << endl
-             << CYAN << "6. " << RESET << "Salir\n"
+             << CYAN << "6. " << RESET << "Ir al apartado de archivos" << endl
+             << CYAN << "7. " << RESET << "Salir\n"
              << endl
              << CYAN << L"Me gustaría: " << RESET;
 
@@ -241,7 +248,20 @@ void desplegar_menu()
         switch (option)
         {
         case 1:
-            listar_aeropuertos();
+            if (!aeropuertos.empty())
+            {
+                generar_listado_aeropuertos("outputs/ListadoAeropuertos.txt");
+                wcout << CYAN << L"¡Listado generado! " << RESET << "\n\nPuede verlo en el "
+                    << CYAN << "apartado de archivos" << RESET
+                    << L" del menú de opciones." << endl;
+            }
+            else
+                cout << CYAN << "No se encontraron aeropuertos en nuestro \
+                    sistema para generar el listado." << RESET << endl;
+            cout << RED << endl;
+            system("pause");
+            cout << RESET << endl;
+            system("cls");
             break;
         case 2:
             listar_reservas();
@@ -255,42 +275,80 @@ void desplegar_menu()
         case 5:
             break;
         case 6:
+            desplegar_apartado_archivos();
+            break;
+        case 7:
+            break;
+        default:
+            wcout << L"La opción ingresada no es válida. Revise lo ingresado.";
+            system("cls");
+        }
+    } while (option != 7);
+    system("cls");
+    wcout << CYAN << L"¡Gracias por utilizar el servicio!" << RESET << endl;
+}
+
+void desplegar_apartado_archivos()
+{
+    unsigned int option;
+    do
+    {
+        wcout << CYAN << "Elija el archivo que desea visualizar:\n"
+             << RESET << endl
+             << CYAN << "1. " << RESET << "Listado de aeropuertos" << endl
+             << CYAN << "7. " << RESET << "Salir\n"
+             << endl
+             << CYAN << L"Me gustaría visualizar el: " << RESET;
+
+        cin >> option;
+
+        system("cls");
+
+        switch (option)
+        {
+        case 1:
+            cout << CYAN << "Aeropuertos en nuestro sistema:\n" << RESET << endl;
+            mostrar_archivo("outputs/ListadoAeropuertos.txt");
+            cout << RED << endl;
+            system("pause");
+            cout << RESET << endl;
+            system("cls");
             break;
         default:
             "La opción ingresada no es válida. Revise lo ingresado.";
             system("cls");
         }
-    } while (option != 6);
+    } while (option != 1);
     system("cls");
-    cout << CYAN << "¡Gracias por utilizar el servicio!" << RESET << endl;
+}
+
+void mostrar_archivo(string path)
+{
+    ifstream archivo(path.c_str());
+
+    string linea;
+
+    while (getline(archivo, linea))
+        cout << linea << endl;
 }
 
 // --------------------------------------------------------------------------------------------- //
 /*                                    Listar los Aeropuertos                                     */
 // --------------------------------------------------------------------------------------------- //
 
-void listar_aeropuertos()
+void generar_listado_aeropuertos(string path)
 {
-    // Si hay aeropuertos...
-    if (!aeropuertos.empty())
+    ofstream archivo;
+
+    archivo.open(path.c_str(), fstream::out);
+
+    for (const auto & aeropuerto : aeropuertos)
     {
-        cout << CYAN << "Contamos con los siguientes aeropuertos en nuestro sistema:\n"
-             << RESET << endl;
-
-        // Por cada par en el mapa...
-        for (const auto & aeropuerto : aeropuertos)
-        {
-            cout << CYAN << "- " << RESET << aeropuerto.first << endl;
-        }
+        archivo << "- " << (aeropuerto.first).c_str() << " (" << (aeropuerto.second.verCiudad()).c_str() << ", "
+            << aeropuerto.second.verPais() << ")." << endl;
     }
-    // En caso contrario...
-    else
-        cout << CYAN << "No se encontraron aeropuertos en nuestro sistema." << RESET << endl;
 
-    cout << RED << endl;
-    system("pause");
-    cout << RESET << endl;
-    system("cls");
+    archivo.close();
 }
 
 // --------------------------------------------------------------------------------------------- //
