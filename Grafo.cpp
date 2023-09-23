@@ -81,6 +81,9 @@ Grafo<C>::~Grafo()
 template <typename C>
 Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo)
 {
+    // Vacío el grafo.
+    graph.clear();
+
     // Obtengo una lista con los vértices del grafo.
     list<string> vertices;
     otroGrafo.devolver_vertices(vertices);

@@ -91,10 +91,12 @@
 1695315983 c:\users\inaki\onedrive\documentos\codeblocks\tpe v3\include\aeropuerto.h
 	<string>
 
-1695322952 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v3\main.cpp
+1695334822 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v3\main.cpp
 	<iostream>
 	<fstream>
 	<locale>
+	<chrono>
+	<thread>
 	<map>
 	<list>
 	<vector>
@@ -124,4 +126,59 @@
 1695317288 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v3\grafo.cpp
 	"Grafo.h"
 	<cassert>
+
+1695479786 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\aeropuerto.cpp
+	"Aeropuerto.h"
+
+1695479894 c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\include\aeropuerto.h
+	<string>
+
+1695479796 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\grafo.cpp
+	"Grafo.h"
+	<cassert>
+
+1695479876 c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\include\grafo.h
+	<iostream>
+	<list>
+	<map>
+	"Vuelo.h"
+	<cassert>
+
+1695479851 c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\include\vuelo.h
+	<map>
+	<list>
+	<string>
+
+1695482594 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\main.cpp
+	<iostream>
+	<fstream>
+	<locale>
+	<chrono>
+	<thread>
+	<set>
+	<map>
+	<list>
+	<string.h>
+	"Vuelo.h"
+	"Grafo.h"
+	"Colors.h"
+	"Aeropuerto.h"
+
+1695479885 c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\include\colors.h
+
+1695479810 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\minheap.cpp
+	"MinHeap.h"
+
+1695479868 c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\include\minheap.h
+	<iostream>
+	<vector>
+
+1695479824 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\sets.cpp
+	<cassert>
+	"Sets.h"
+
+1695479859 c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\include\sets.h
+
+1695479836 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\vuelo.cpp
+	"Vuelo.h"
 

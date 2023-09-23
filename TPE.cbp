@@ -50,6 +50,9 @@
 		<Unit filename="include/Sets.h" />
 		<Unit filename="include/Vuelo.h" />
 		<Extensions>
+			<code_completion>
+				<search_path add="include" />
+			</code_completion>
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

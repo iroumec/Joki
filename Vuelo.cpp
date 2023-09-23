@@ -35,20 +35,17 @@ Vuelo::Vuelo()
 
 Vuelo &Vuelo::operator=(const Vuelo &otroVuelo)
 {
+    // Limpio la estructura.
+    vuelos.clear();
+
     this->cabotaje = otroVuelo.esCabotaje();
     this->distancia = otroVuelo.verDistancia();
 
     std::list<std::string> aerolineas;
     otroVuelo.verAerolineas(aerolineas);
 
-    auto it = aerolineas.begin();
-
-    while (it != aerolineas.end())
-    {
-        agregarAerolinea(*it, otroVuelo.verAsientosTotales(*it), otroVuelo.verAsientosReservados(*it));
-
-        it++;
-    }
+    for (const std::string & aerolinea : aerolineas)
+        agregarAerolinea(aerolinea, otroVuelo.verAsientosTotales(aerolinea), otroVuelo.verAsientosReservados(aerolinea));
 
     return *this;
 }
@@ -152,9 +149,7 @@ unsigned int Vuelo::verAsientosReservados(const std::string &aerolinea) const
 
     // Si encontr� la aerol�nea, obtengo los asientos reservados.
     if (it != vuelos.end())
-    {
         asientos_reservados = (it->second).reservados;
-    }
 
     // Retorno los asientos disponibles.
     return asientos_reservados;
@@ -169,7 +164,9 @@ void Vuelo::modificarAsientosReservados(const std::string &aerolinea, const unsi
 
     // Si la encuentra, cambia el n�mero de asientos reservados.
     if (it != vuelos.end())
+    {
         (it->second).reservados = reservas;
+    }
 
     // Si no la encuentra, nada se va a modificar.
 }
@@ -179,7 +176,7 @@ void Vuelo::modificarAsientosReservados(const std::string &aerolinea, const unsi
 void Vuelo::agregarAerolinea(const std::string &nombreAerolinea, const unsigned int &asientosTotales,
                              const unsigned int &asientosReservados)
 {
-    asientos asientosNuevoVuelo;
+    struct asientos asientosNuevoVuelo;
 
     asientosNuevoVuelo.totales = asientosTotales;
     asientosNuevoVuelo.reservados = asientosReservados;
