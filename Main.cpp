@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <locale>
 
 #include <set>
@@ -22,6 +23,11 @@ void cargar_reservas(string path);
 void cargar_aeropuertos_rutas(string path);
 void cargar_rutas(string path);
 
+void solicitar_datos(string &origen, string &destino);
+void solicitar_datos(string &origen, string &destino, string &aerolinea);
+
+void eliminar_archivos_viejos(const filesystem::path & carpeta);
+
 void desplegar_menu();
 void desplegar_apartado_archivos();
 
@@ -33,13 +39,11 @@ void generar_listado_reservas(string path);
 
 void existe_vuelo_directo();
 
-void solicitar_datos(string &origen, string &destino);
-void solicitar_datos(string &origen, string &destino, string &aerolinea);
+void generar_listado_vuelos_misma_aerolinea(const string & origen, const string & destino);
 
-void mostrar_vuelos_misma_aerolinea();
-void busqueda_caminos(const string &origen, const string &destino, const string &aerolinea,
-                      double &distancia, unsigned int &escalas, list<string> &camino, map<string, bool> &visitado);
-void imprimir_camino(const string &destino, const double &distancia, const unsigned int &escalas, const list<string> &camino);
+void buscar_caminos(const string &origen, const string &destino, const string &aerolinea,
+                      double &distancia, unsigned int &escalas, list<string> &camino, map<string, bool> &visitado, ofstream & archivo);
+void cargar_camino(const string &destino, const double &distancia, const unsigned int &escalas, const list<string> &camino, ofstream & archivo);
 
 // --------------------------------------------------------------------------------------------- //
 /**                                     Variables Globales                                      **/
@@ -61,14 +65,15 @@ int main()
 {
     setlocale(LC_ALL, "");
 
+    // En cada inicialización del programa, se eliminan aquellos archivos viejos de antiguas ejecuciones.
+    filesystem::path carpeta("outputs");
+    eliminar_archivos_viejos(carpeta);
+
     cargar_aeropuertos("datasets/Aeropuertos.txt");
     cargar_rutas("datasets/Rutas.txt");
     cargar_reservas("datasets/Reservas.txt");
 
     desplegar_menu();
-
-    remove("outputs/ListadoAeropuertos.txt");
-    remove("outputs/ListadoReservas.txt");
 
     return 0;
 }
@@ -237,6 +242,8 @@ void desplegar_menu()
     wcout << CYAN << L"¡Bienvenido, usuario!\n"
          << RESET << endl;
     char option;
+    bool listadoGenerado = false;
+    string origen, destino;
     do
     {
         wcout << CYAN << "Estas son las opciones disponibles en nuestro sistema:\n"
@@ -244,7 +251,7 @@ void desplegar_menu()
              << CYAN << "1. " << RESET << "Listar todos los aeropuertos" << endl
              << CYAN << "2. " << RESET << "Listar todas las reservas realizadas" << endl
              << CYAN << "3. " << RESET << "Verificar si existe un vuelo directo" << endl
-             << CYAN << "4. " << RESET << L"Obtener todos los vuelos a través de una misma aerolínea" << endl
+             << CYAN << "4. " << RESET << L"Listar todos los vuelos posibles de un origen a un destino a través de una misma aerolínea" << endl
              << CYAN << "5. " << RESET << "Circuito de aeropuertos" << endl
              << CYAN << "6. " << RESET << "Ir al apartado de archivos" << endl
              << CYAN << "7. " << RESET << "Salir\n"
@@ -261,31 +268,32 @@ void desplegar_menu()
             if (!aeropuertos.empty())
             {
                 generar_listado_aeropuertos("outputs/ListadoAeropuertos.txt");
-                wcout << CYAN << L"¡Listado generado! " << RESET << "\n\nPuede verlo en el "
-                    << CYAN << "apartado de archivos" << RESET
-                    << L" del menú de opciones." << endl;
+                listadoGenerado = true;
             }
             else
-                cout << CYAN << "No se encontraron aeropuertos en nuestro \
-                    sistema para generar el listado." << RESET << endl;
+                cout << RED << "No se hallaron aeropuertos en el sistema" << RESET << endl;
             break;
         case '2':
-            if (!aeropuertos.empty())
+            if (reservas > 0)
             {
                 generar_listado_reservas("outputs/ListadoReservas.txt");
-                wcout << CYAN << L"¡Listado generado! " << RESET << "\n\nPuede verlo en el "
-                    << CYAN << "apartado de archivos" << RESET
-                    << L" del menú de opciones." << endl;
+                listadoGenerado = true;
             }
             else
-                cout << CYAN << "No se encontraron reservas en nuestro \
-                    sistema para generar el listado." << RESET << endl;
+                cout << RED << "No se hallaron reservas en nuestro sistema." << RESET << endl;
             break;
         case '3':
             existe_vuelo_directo();
             break;
         case '4':
-            mostrar_vuelos_misma_aerolinea();
+            solicitar_datos(origen, destino); system("cls");
+            if (redDeViajes.existe_vertice(origen) && redDeViajes.existe_vertice(destino))
+            {
+                generar_listado_vuelos_misma_aerolinea(origen, destino);
+                listadoGenerado = true;
+            }
+            else
+                cout << RED << "Los aeropuertos indicados no han sido hallados en el sistema" << RESET << endl;
             break;
         case '5':
             break;
@@ -296,6 +304,13 @@ void desplegar_menu()
             break;
         default:
             wcout << RED << L"La opción ingresada no es válida. Revise lo ingresado.\n" << RESET;
+        }
+        if (listadoGenerado)
+        {
+            wcout << CYAN << L"¡Listado generado! " << RESET << "\n\nPuede verlo en el "
+                    << CYAN << "apartado de archivos" << RESET
+                    << L" del menú de opciones." << endl;
+            listadoGenerado = false;
         }
         if ((option != '6' && option != '7'))
         {
@@ -311,16 +326,26 @@ void desplegar_menu()
 
 // --------------------------------------------------------------------------------------------- //
 
+void eliminar_archivos_viejos(const filesystem::path & carpeta)
+{
+    for (const auto & archivo : filesystem::directory_iterator(carpeta))
+        filesystem::remove_all(archivo.path());
+}
+
+// --------------------------------------------------------------------------------------------- //
+
 void desplegar_apartado_archivos()
 {
     char option;
+    string origen, destino;
     do
     {
         wcout << CYAN << "Elija el archivo que desea visualizar:\n"
              << RESET << endl
              << CYAN << "1. " << RESET << "Listado de aeropuertos" << endl
              << CYAN << "2. " << RESET << "Listado de reservas" << endl
-             << CYAN << "3. " << RESET << L"Volver al menú principal\n"
+             << CYAN << "3. " << RESET << "Listado de vuelos de un origen a un destino a través de una misma aerolínea" << endl
+             << CYAN << "4. " << RESET << L"Volver al menú principal\n"
              << endl
              << CYAN << L"Me gustaría visualizar el: " << RESET;
 
@@ -331,26 +356,28 @@ void desplegar_apartado_archivos()
         switch (option)
         {
         case '1':
-            cout << CYAN << "Aeropuertos en nuestro sistema:\n" << RESET << endl;
             mostrar_archivo("outputs/ListadoAeropuertos.txt");
             break;
         case '2':
-            cout << CYAN << "Se registraron las siguientes reservas en nuestro sistema: \n"
-                << RESET << endl;
             mostrar_archivo("outputs/ListadoReservas.txt");
+            break;
         case '3':
+            solicitar_datos(origen, destino); system("cls");
+            mostrar_archivo("outputs/VuelosMismaAerolinea_" + origen + "_" + destino + ".txt");
+            break;
+        case '4':
             break;
         default:
             wcout << RED << L"La opción ingresada no es válida. Revise lo ingresado.\n" << RESET;
         }
-    if (option != '3')
+    if (option != '4')
     {
         cout << RED << endl;
         system("pause");
         cout << RESET << endl;
         system("cls");
     }
-    } while (option != '3');
+    } while (option != '4');
 }
 
 // --------------------------------------------------------------------------------------------- //
@@ -380,6 +407,8 @@ void generar_listado_aeropuertos(string path)
 
     archivo.open(path.c_str(), fstream::out);
 
+    archivo << "Aeropuertos en nuestro sistema:\n" << endl;
+
     for (const auto & aeropuerto : aeropuertos)
     {
         archivo << "- " << (aeropuerto.first).c_str() << " (" << (aeropuerto.second.verCiudad()).c_str() << ", "
@@ -403,6 +432,8 @@ void generar_listado_reservas(string path)
     ofstream archivo;
 
     archivo.open(path.c_str(), fstream::out);
+
+    archivo << "Reservas registradas en el sistema: \n" << endl;
 
     for (const auto & aeropuerto : aeropuertos)
     {
@@ -514,11 +545,9 @@ void existe_vuelo_directo()
 /*                     Mostrar Vuelos a través de una Misma Aerolínea                            */
 // --------------------------------------------------------------------------------------------- //
 
- void mostrar_vuelos_misma_aerolinea()
+ void generar_listado_vuelos_misma_aerolinea(const string & origen, const string & destino)
 {
     // Declaro las variables necesarias.
-
-    string origen, destino;
 
     list<string> camino;
 
@@ -530,32 +559,33 @@ void existe_vuelo_directo()
 
     // Solicito los datos
 
-    solicitar_datos(origen, destino);
+    ofstream archivo;
 
-    system("cls");
+    archivo.open("outputs/VuelosMismaAerolinea_" + origen + "_" + destino + ".txt", fstream::out);
 
     // Por cada aeropuerto en el mapa de aeropuertos, inicializo su estado de visitado en falso
     for (const auto & aeropuerto : aeropuertos)
         visitado.insert({aeropuerto.first, false});
 
-    cout << "Estos son todos los vuelos del aeropuerto " << CYAN << origen << RESET
-    << " al aeropuerto " << CYAN << destino << RESET << " a trav�s de: \n" << endl;
+    archivo << "Vuelos del aeropuerto " << origen << " al aeropuerto " << destino << " a través de: \n" << endl;
 
     // Por cada aerolínea en la lista de aerolíneas...
     for (const string & aerolinea : aerolineas)
     {
-        cout << CYAN << "-----------------------------------------------------------------------------------------\n" << RESET << endl;
+        archivo << "-----------------------------------------------------------------------------------------\n" << endl;
 
-        cout << "Aerolínea " << CYAN << aerolinea << RESET << ": \n" << endl;
+        archivo << "Aerolínea " << aerolinea << ": \n" << endl;
 
-        busqueda_caminos(origen, destino, aerolinea, distancia, escalas, camino, visitado);
+        buscar_caminos(origen, destino, aerolinea, distancia, escalas, camino, visitado, archivo);
     }
+
+    archivo.close();
 }
 
 // ------------------------------------Búsqueda de Caminos-------------------------------------- //
 
- void busqueda_caminos(const string & origen, const string & destino, const string & aerolinea,
-                      double & distancia, unsigned int & escalas, list<string> & camino, map<string, bool> & visitado)
+ void buscar_caminos(const string & origen, const string & destino, const string & aerolinea,
+                      double & distancia, unsigned int & escalas, list<string> & camino, map<string, bool> & visitado, ofstream & archivo)
 {
     Vuelo vuelo;
 
@@ -565,7 +595,7 @@ void existe_vuelo_directo()
 
     // Si estoy en el destino...
     if (origen == destino)
-        imprimir_camino(destino, distancia, escalas, camino);
+        cargar_camino(destino, distancia, escalas, camino, archivo);
     else
     {
         list<Grafo<Vuelo>::Arco> arcos;
@@ -579,7 +609,7 @@ void existe_vuelo_directo()
                 if (vuelo.verAsientosLibres(aerolinea) > 0)
                 {
                     distancia += vuelo.verDistancia();
-                    busqueda_caminos(arco.devolver_adyacente(), destino, aerolinea, distancia, escalas, camino, visitado);
+                    buscar_caminos(arco.devolver_adyacente(), destino, aerolinea, distancia, escalas, camino, visitado, archivo);
                     distancia -= vuelo.verDistancia();
                 }
         }
@@ -591,21 +621,21 @@ void existe_vuelo_directo()
 
 // -------------------------------------Imprimir Camino----------------------------------------- //
 
- void imprimir_camino(const string & destino, const double & distancia, const unsigned int & escalas, const list<string> & camino)
+ void cargar_camino(const string & destino, const double & distancia, const unsigned int & escalas, const list<string> & camino, ofstream & archivo)
 {
     for (const string & aeropuerto : camino)
     {
-        cout << aeropuerto;
+        archivo << aeropuerto;
         if (aeropuerto != destino)
-            cout << " -> ";
+            archivo << " -> ";
     }
 
     if (escalas == 2)
-        cout << "\nVuelo directo. ";
+        archivo << "\nVuelo directo. ";
     else if (escalas == 3)
-        cout << "\nVuelo con 1 escala. ";
+        archivo << "\nVuelo con 1 escala. ";
     else
-        cout << "\nVuelo con " << (escalas-2) << " escalas. ";
+        archivo << "\nVuelo con " << (escalas-2) << " escalas. ";
 
-    cout << "Distancia: " << distancia << " kilómetros." << "\n" << endl;
+    archivo << "Distancia: " << distancia << " kilómetros." << "\n" << endl;
 }

@@ -149,12 +149,11 @@
 	<list>
 	<string>
 
-1695482594 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\main.cpp
+1695569752 source:c:\users\inaki\onedrive\documentos\codeblocks\tpe v6\main.cpp
 	<iostream>
 	<fstream>
+	<filesystem>
 	<locale>
-	<chrono>
-	<thread>
 	<set>
 	<map>
 	<list>
