@@ -83,7 +83,7 @@ public:
 	void vaciar();
 
 private:
-	map<string, list<Arco>> graph;
+	map<string, map<string, C>> graph;
 
 }; // class Grafo
 
