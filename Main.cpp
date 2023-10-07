@@ -254,6 +254,8 @@ void cargarReservas(string path)
                 reservas.insert({nombre_aeropuerto_origen, nuevo_mapa});
             }
 
+            //cout << reservas[nombre_aeropuerto_origen][nombre_aeropuerto_destino].retornarAsientosReservados(aerolinea) << endl;
+
             numeroReservas++;
         }
     }
@@ -481,7 +483,7 @@ void generarListadoReservas(string path)
 
             vuelo.verAerolineas(aerolineas);
 
-            aeropuertoDestino = arco.devolver_adyacente();
+            aeropuertoDestino = aeropuertos[arco.devolver_adyacente()].verNombre();
 
             for (string aerolinea : aerolineas)
             {
@@ -492,10 +494,8 @@ void generarListadoReservas(string path)
 
                 catch(invalid_argument & exc)
                 {
-                    asientosReservados = 1;
+                    asientosReservados = 0;
                 }
-
-                cout << asientosReservados << endl;
 
                 // Si hay reservas realizadas...
                 if (asientosReservados > 0)
@@ -528,35 +528,37 @@ void solicitarDatos(unsigned int &origen, unsigned int &destino, string &aerolin
 {
     listarAeropuertos();
 
-    cout << CYAN << "- " << RESET << "Seleccione un aeropuerto de origen: ";
+    cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
     origen = seleccionarAeropuerto();
 
-    cout << CYAN << "\n- " << RESET << "Seleccione un aeropuerto de destino: ";
+    cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
     destino = seleccionarAeropuerto();
 
     system("cls");
 
     listarAerolineas();
 
-    wcout << CYAN << "\n- " << RESET << L"Seleccione una aerolínea: ";
+    wcout << CYAN << L"\n- Seleccione una aerolínea: " << RESET;
     aerolinea = seleccionarAerolinea();
+
+    system("cls");
 }
 
 void solicitarDatos(unsigned int &origen, unsigned int &destino)
 {
     listarAeropuertos();
 
-    cout << CYAN << "- " << RESET << "Seleccione un aeropuerto de origen: ";
+    cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
     origen = seleccionarAeropuerto();
 
-    cout << CYAN << "\n- " << RESET << "Seleccione un aeropuerto de destino: ";
+    cout << CYAN << "\n- Seleccione un aeropuerto de destino: " << RESET;
     destino = seleccionarAeropuerto();
 }
 
 void listarAeropuertos()
 {
     for (unsigned int i = 0; i < aeropuertos.size(); i++)
-        cout << i+1 << ". " << aeropuertos[i].verNombre() << endl;
+        cout << CYAN << i+1 << ". " << RESET << aeropuertos[i].verNombre() << endl;
 }
 
 void listarAerolineas()
@@ -565,7 +567,8 @@ void listarAerolineas()
 
     for (const string & aerolinea : aerolineas)
     {
-        cout << index << ". " << aerolinea << endl;
+        cout << CYAN << index << ". " << RESET << aerolinea << endl;
+        index++;
     }
 }
 
@@ -616,7 +619,7 @@ unsigned int seleccionarAeropuerto()
 
 void existeVueloDirecto()
 {
-    unsigned int origen, destino;
+    unsigned int origen, destino, asientosReservados;
     string nombreAeropuertoOrigen, nombreAeropuertoDestino, aerolinea;
 
     solicitarDatos(origen, destino, aerolinea);
@@ -642,17 +645,30 @@ void existeVueloDirecto()
 
         if (vuelo.existeAerolinea(aerolinea))
         {
-            unsigned int asientosReservados = reservas[nombreAeropuertoOrigen][nombreAeropuertoDestino].retornarAsientosReservados(aerolinea);
+            try
+            {
+                asientosReservados = reservas[nombreAeropuertoOrigen][nombreAeropuertoDestino].retornarAsientosReservados(aerolinea);
+            }
 
-            cout << "\n¡Vuelo de " << CYAN << origen << RESET << " a " << CYAN << destino << RESET
+            catch(invalid_argument & exc)
+            {
+                asientosReservados = 0;
+            }
+
+            cout << "¡Vuelo de " << CYAN << nombreAeropuertoOrigen << RESET << " a " << CYAN << nombreAeropuertoDestino << RESET
                  << " a través de " << CYAN << aerolinea << RESET << " hallado! \n"
                  << "\n- Distancia del vuelo: " << CYAN << vuelo.verDistancia() << " km \n"
                  << RESET
                  << "\n- Asientos disponibles: " << CYAN << vuelo.verAsientosTotales(aerolinea) - asientosReservados << RESET << endl;
         }
+        else
+        {
+            cout << RED << "No existe" << RESET << " un vuelo desde " << RED << nombreAeropuertoOrigen << RESET << " a " << RED << nombreAeropuertoDestino
+             << RESET << " a través de " << RED << aerolinea << RESET << endl;
+        }
     }
     else
-        cout << RED << "\nNo existe" << RESET << " un vuelo desde " << RED << origen << RESET << " a " << RED << destino
+        cout << RED << "No existe" << RESET << " un vuelo desde " << RED << nombreAeropuertoOrigen << RESET << " a " << RED << nombreAeropuertoDestino
              << RESET << " a través de " << RED << aerolinea << RESET << endl;
 }
 
@@ -705,6 +721,7 @@ void buscarCaminos(const unsigned int &origen, const unsigned int &destino, cons
     camino.push_back(origen);
     escalas++;
 
+    unsigned int asientosReservados;
     string nombreOrigen = aeropuertos[origen].verNombre(), nombreDestino;
 
     // Si estoy en el destino...
@@ -721,8 +738,18 @@ void buscarCaminos(const unsigned int &origen, const unsigned int &destino, cons
 
             nombreDestino = aeropuertos[arco.devolver_adyacente()].verNombre();
 
+            try
+            {
+                asientosReservados = reservas[nombreOrigen][nombreDestino].retornarAsientosReservados(aerolinea);
+            }
+
+            catch(invalid_argument & exc)
+            {
+                asientosReservados = 0;
+            }
+
             if (!(visitado[arco.devolver_adyacente()]))
-                if ((vuelo.verAsientosTotales(aerolinea) - reservas[nombreOrigen][nombreDestino].retornarAsientosReservados(aerolinea)) > 0)
+                if ((vuelo.verAsientosTotales(aerolinea) - asientosReservados) > 0)
                 {
                     distancia += vuelo.verDistancia();
                     buscarCaminos(arco.devolver_adyacente(), destino, aerolinea, distancia, escalas, camino, visitado, archivo);
@@ -741,7 +768,7 @@ void cargarCamino(const unsigned int &destino, const double &distancia, const un
 {
     for (const unsigned int &indice : camino)
     {
-        archivo << aeropuertos[indice].verCiudad();
+        archivo << aeropuertos[indice].verNombre();
         if (aeropuertos[indice].verNombre() != aeropuertos[destino].verNombre())
             archivo << " -> ";
     }
@@ -752,6 +779,8 @@ void cargarCamino(const unsigned int &destino, const double &distancia, const un
         archivo << "\nVuelo con 1 escala. ";
     else
         archivo << "\nVuelo con " << (escalas - 2) << " escalas. ";
+
+    cout << distancia;
 
     archivo << "Distancia: " << distancia << " kilómetros."
             << "\n"
