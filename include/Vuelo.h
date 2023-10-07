@@ -27,8 +27,7 @@ public:
     ///                               Métodos Modificadores                                 ///
     // --------------------------------------------------------------------------------------//
 
-    void agregarAerolinea(const std::string & nombreAerolinea, const unsigned int & asientosTotales,
-                          const unsigned int & asientosReservados = 0);
+    void agregarAerolinea(const std::string & nombreAerolinea, const unsigned int & asientosTotales);
 
     void modificarAsientosReservados(const std::string & aerolinea, const unsigned int & reservas);
 
@@ -46,24 +45,15 @@ public:
 
     void verAerolineas(std::list<std::string> & aerolineas) const;
 
-    unsigned int verAsientosLibres(const std::string & aerolinea) const;
-
     unsigned int verAsientosTotales(const std::string & aerolinea) const;
 
-    unsigned int verAsientosReservados(const std::string & aerolinea) const;
-
 private:
-
-    struct asientos // Estructura para almacenar los asientos totales y los reservados.
-    {
-        unsigned int totales, reservados;
-    };
 
     bool cabotaje; // Almaceno si el vuelo es de cabotaje o no (nacional).
 
     double distancia; // Almaceno la distancia del vuelo.
 
-    std::map<std::string, struct asientos> vuelos; // Almaceno las aerolíneas por las cuales es posible el vuelo (y sus reservas).
+    std::map<std::string, unsigned int> vuelos; // Almaceno las aerolíneas por las cuales es posible el vuelo (y sus reservas).
 };
 
 

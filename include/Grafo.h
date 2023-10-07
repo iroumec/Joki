@@ -27,16 +27,16 @@ public:
 	public:
 		Arco(); // Constructor de la clase.
 
-		Arco(string adyacente, const C &costo); // Destructor de la clase.
+		Arco(int adyacente, const C &costo); // Destructor de la clase.
 
-		string devolver_adyacente() const; // Devolver el identificador del vértice adyacente.
+		int devolver_adyacente() const; // Devolver el identificador del vértice adyacente.
 
 		const C &devolver_costo() const; // Devolver el costo del arco entre ambos vértices.
 
 		void nuevo_costo(const C &costo); // Modifico el costo del arco.
 
 	private:
-		string vertice;
+		int vertice;
 
 		C costo;
 
@@ -54,36 +54,36 @@ public:
 
 	int devolver_longitud() const; // Consultar por la cantidad de vértices del grafo.
 
-	bool existe_vertice(string vertice) const; // Consultar si existe un vértice en el grafo.
+	bool existe_vertice(int vertice) const; // Consultar si existe un vértice en el grafo.
 
-	bool existe_arco(string origen, string destino) const; // Consultar si existe un arco entre dos vértices.
+	bool existe_arco(int origen, int destino) const; // Consultar si existe un arco entre dos vértices.
 
 	// PRE CONDICION: existe_arco(origen, destino)
-	const C &costo_arco(string origen, string destino) const; // Consultar por el costo del arco entre dos vértices.
+	const C &costo_arco(int origen, int destino) const; // Consultar por el costo del arco entre dos vértices.
 
-	void devolver_vertices(list<string> &vertices) const;
+	void devolver_vertices(list<int> &vertices) const;
 
-	void devolver_adyacentes(string origen, list<Arco> &adyacentes) const;
+	void devolver_adyacentes(int origen, list<Arco> &adyacentes) const;
 
-	void agregar_vertice(string vertice);
+	void agregar_vertice(int vertice);
 
 	// POST CONDICION: Para todo vértice v != vertice: !existeArco(v, vertice) && !existeArco(vertice, v)
-	void eliminar_vertice(string vertice);
+	void eliminar_vertice(int vertice);
 
 	// PRE CONDICION: existeArco(origen, destino)
-	void modificar_costo_arco(string origen, string destino, const C &costo);
+	void modificar_costo_arco(int origen, int destino, const C &costo);
 
 	// PRE CONDICION: existeVertice(origen) && existeVertice(destino)
 	// POST CONDICION: existeArco(origen, destino)
-	void agregar_arco(string origen, string destino, const C &costo);
+	void agregar_arco(int origen, int destino, const C &costo);
 
 	// POST CONDICION: !existeArco(origen, destino)
-	void eliminar_arco(string origen, string destino);
+	void eliminar_arco(int origen, int destino);
 
 	void vaciar();
 
 private:
-	map<string, map<string, C>> graph;
+	map<int, map<int, C>> graph;
 
 }; // class Grafo
 
@@ -99,9 +99,9 @@ template <typename C>
 ostream &operator<<(ostream &salida, const Grafo<C> &grafo)
 {
 	// Recorremos todos los vertices
-	list<string> vertices;
+	list<int> vertices;
 	grafo.devolver_vertices(vertices);
-	typename list<string>::iterator v = vertices.begin();
+	typename list<int>::iterator v = vertices.begin();
 	while (v != vertices.end())
 	{
 		salida << "    " << *v << "\n";

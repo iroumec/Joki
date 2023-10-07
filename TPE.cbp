@@ -38,6 +38,7 @@
 		<Unit filename="Grafo.cpp" />
 		<Unit filename="Main.cpp" />
 		<Unit filename="MinHeap.cpp" />
+		<Unit filename="Reserva.cpp" />
 		<Unit filename="Sets.cpp" />
 		<Unit filename="Vuelo.cpp" />
 		<Unit filename="datasets/Aeropuertos.txt" />
@@ -47,6 +48,7 @@
 		<Unit filename="include/Colors.h" />
 		<Unit filename="include/Grafo.h" />
 		<Unit filename="include/MinHeap.h" />
+		<Unit filename="include/Reserva.h" />
 		<Unit filename="include/Sets.h" />
 		<Unit filename="include/Vuelo.h" />
 		<Extensions>
