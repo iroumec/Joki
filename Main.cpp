@@ -816,55 +816,65 @@ void cargarCamino(const unsigned int &destino, const double &distancia, const un
 
 // -------------------------------------Circuito Aeropuertos----------------------------------------- //
 
-bool perteneceCircuito(unsigned int veticeActual,  unsigned int indice,vector  nsigned int>  circuito
+bool perteneceCircuito(unsigned int verticeActual, unsigned int indice, vector<unsigned int> circuito)
 {
     for (unsigned int i = 0; i < indice; i++)
     {
-        if (circuito[i] == verticeActual)
+        if ((circuito[i] - 1) == verticeActual)
             return true;
     }
     return false;
 }
 
-void circuitoHamiltoniano(unsigned int & verticeInicio, unsigned int & indice, vector<unsigned int> & circuito, vector<unsigned int> & circuitoMinimo, unsigned int & costoActual, unsigned int & costoMinimo)
+void circuitoHamiltoniano(const unsigned int &verticeInicio, const unsigned int &indice, vector<unsigned int> &circuito, vector<unsigned int> &circuitoMinimo, unsigned int &costoActual, unsigned int &costoMinimo)
 {
-    if (indice == redDeViajes.devolverLongitud()) // Me paasé de la última posición del circuito
+    circuito[indice] = verticeInicio + 1;
+
+    if (indice == redDeViajes.devolverLongitud() - 1) // Me paasé de la última posición del circuito
     {
-        if (costoActual < costoMinimo) // Condición de corte
+        bool existeArco = true;
+
+        Vuelo vuelo;
+
+        try
         {
-            circuitoMinimo = circuito; // El circuito mínimo se vuelve el guardado hasta el momento
-            costoMinimo = costoActual; // El costo mínimo se actualiza
+            vuelo = redDeViajes.costoArco(verticeInicio, circuito[0] - 1);
+        }
+
+        catch (const invalid_argument &exc)
+        {
+            existeArco = false;
+        }
+
+        if (existeArco)
+        {
+            costoActual += vuelo.verDistancia();
+            if (costoActual < costoMinimo) // Condición de corte
+            {
+                circuitoMinimo = circuito; // El circuito mínimo se vuelve el guardado hasta el momento
+                costoMinimo = costoActual; // El costo mínimo se actualiza
+            }
         }
     }
     else
     {
-        circuito[indice] = verticeInicio + 1;
+        list<Grafo<Vuelo>::Arco> arcos;
+        redDeViajes.devolverAdyacentes(verticeInicio, arcos);
 
-        while (vertice != 0)
+        for (const auto &arco : arcos) // Por cada adyacente al vértice
         {
-            vertice = siguienteVertice(verticeInicio, indice + 1, circuito, costoActual, costoMinimo);
-            if (vertice != INF) // Si encontramos un posible vértice, entramos a la recursión
-                circuitoHamiltoniano(vertice, (indice + 1), circuito, circuitoMinimo, costoActual, costoMinimo);
-        }
-
-        circuito[indice] = 0;
-    }
-}
-
-unsigned int siguienteVertice(unsigned int verticeActual, unsigned int indice, vector<unsigned int> & circuito, unsigned int costoActual, unsigned int costoMinimo)
-{
-    list<Grafo<Vuelo>::Arco> arcos;
-    redDeViajes.devolverAdyacentes(verticeActual, arcos);
-
-    for (const auto &arco : arcos)
-    {
-        if (!perteneceCircuito(arco.devolverAdyacente(), indice, circuito))
-        {
-            Vuelo vuelo = arco.devolverCosto();
-            if (costoActual += vuelo.verDistancia() < costoMinimo)
-                return arco.devolverAdyacente(); // Porque nuestro grafo tiene vértices del 0 a n, y queremos a 0 como discernible
+            if (!perteneceCircuito(arco.devolverAdyacente(), indice + 1, circuito))
+            {
+                Vuelo vuelo = arco.devolverCosto();
+                if (costoActual + vuelo.verDistancia() < costoMinimo)
+                {
+                    costoActual += vuelo.verDistancia();
+                    circuitoHamiltoniano(arco.devolverAdyacente(), (indice + 1), circuito, circuitoMinimo, costoActual, costoMinimo);
+                    costoActual -= vuelo.verDistancia();
+                }
+            }
         }
     }
 
-    return INF;
+    circuito[indice] = 0;
 }
