@@ -31,6 +31,7 @@ void listarAerolineas();
 unsigned int seleccionarAeropuerto();
 string seleccionarAerolinea();
 
+void solicitarDatos(unsigned int &origen);
 void solicitarDatos(unsigned int &origen, unsigned int &destino);
 void solicitarDatos(unsigned int &origen, unsigned int &destino, string &aerolinea);
 
@@ -53,6 +54,14 @@ void buscarCaminos(const unsigned int &origen, const unsigned int &destino, cons
                    double &distancia, unsigned int &escalas, list<unsigned int> &camino, vector<bool> &visitado, ofstream &archivo);
 
 void cargarCamino(const unsigned int &destino, const double &distancia, const unsigned int &escalas, const list<unsigned int> &camino, ofstream &archivo);
+
+void mostrarCircuito(vector<unsigned int> circuito);
+
+void inicializarVector(vector<unsigned int> & vectorSinLlenar, unsigned int n);
+
+bool perteneceCircuito(unsigned int verticeActual, unsigned int indice, vector<unsigned int> circuito);
+
+void circuitoHamiltoniano(const unsigned int &verticeInicio, const unsigned int &indice, vector<unsigned int> &circuito, vector<unsigned int> &circuitoMinimo, unsigned int &costoActual, unsigned int &costoMinimo);
 
 // --------------------------------------------------------------------------------------------- //
 /**                                     Variables Globales                                      **/
@@ -82,9 +91,9 @@ int main()
     filesystem::path carpeta("outputs");
     eliminarArchivosAntiguos(carpeta);
 
-    cargarAeropuertos("datasets/Aeropuertos.txt");
-    cargarReservas("datasets/Reservas.txt");
-    cargarRutas("datasets/Rutas.txt");
+    cargarAeropuertos("datasets/Aeropuertos2.txt");
+    cargarReservas("datasets/Reservas2.txt");
+    cargarRutas("datasets/Rutas3.txt");
 
     desplegarMenu();
 
@@ -300,7 +309,8 @@ void desplegarMenu()
           << RESET << endl;
     char option;
     bool listadoGenerado = false;
-    unsigned int origen, destino;
+    unsigned int origen, destino, indice = 0, costoActual = 0, costoMinimo = INF;
+    vector<unsigned int> circuito, circuitoMinimo;
     do
     {
         wcout << CYAN << "Estas son las opciones disponibles en nuestro sistema:\n"
@@ -354,6 +364,24 @@ void desplegarMenu()
                 cout << RED << "Los aeropuertos indicados no han sido hallados en el sistema" << RESET << endl;
             break;
         case '5':
+            solicitarDatos(origen);
+            inicializarVector(circuito, redDeViajes.devolverLongitud());
+            inicializarVector(circuitoMinimo, redDeViajes.devolverLongitud());
+            indice = costoActual = 0;
+            costoMinimo = INF;
+            system("cls");
+            circuitoHamiltoniano(origen, indice, circuito, circuitoMinimo, costoActual, costoMinimo);
+            if (costoMinimo != INF)
+            {
+                cout << "El circuito mínimo con origen en " << CYAN << aeropuertos[origen].verNombre() << RESET << " es:\n\n";
+                mostrarCircuito(circuitoMinimo);
+                cout << "\nCon una distancia de: " << CYAN << costoMinimo << " kilómetros" << RESET << endl;
+            }
+            else
+            {
+                cout << RED << "No fue posible hallar ningún circuito en la red de viajes con origen en " << RESET << aeropuertos[origen].verNombre() << endl;
+            }
+            circuito.clear(); circuitoMinimo.clear(); costoActual = 0; costoMinimo = INF; indice = 0;
             break;
         case '6':
             desplegarApartadoArchivos();
@@ -553,6 +581,25 @@ void generarListadoReservas(string path)
 /*                                        Solicitar Datos                                        */
 // --------------------------------------------------------------------------------------------- //
 
+void solicitarDatos(unsigned int &origen)
+{
+    listarAeropuertos();
+
+    cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
+    origen = seleccionarAeropuerto();
+}
+
+void solicitarDatos(unsigned int &origen, unsigned int &destino)
+{
+    listarAeropuertos();
+
+    cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
+    origen = seleccionarAeropuerto();
+
+    cout << CYAN << "\n- Seleccione un aeropuerto de destino: " << RESET;
+    destino = seleccionarAeropuerto();
+}
+
 void solicitarDatos(unsigned int &origen, unsigned int &destino, string &aerolinea)
 {
     listarAeropuertos();
@@ -571,17 +618,6 @@ void solicitarDatos(unsigned int &origen, unsigned int &destino, string &aerolin
     aerolinea = seleccionarAerolinea();
 
     system("cls");
-}
-
-void solicitarDatos(unsigned int &origen, unsigned int &destino)
-{
-    listarAeropuertos();
-
-    cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
-    origen = seleccionarAeropuerto();
-
-    cout << CYAN << "\n- Seleccione un aeropuerto de destino: " << RESET;
-    destino = seleccionarAeropuerto();
 }
 
 void listarAeropuertos()
@@ -816,6 +852,23 @@ void cargarCamino(const unsigned int &destino, const double &distancia, const un
 
 // -------------------------------------Circuito Aeropuertos----------------------------------------- //
 
+void inicializarVector(vector<unsigned int> & vectorSinLlenar, unsigned int n)
+{
+    for (unsigned int i = 0; i < n; i++)
+        vectorSinLlenar.push_back(0);
+}
+
+// --------------------------------------------------------------------------------------------- //
+
+void mostrarCircuito(vector<unsigned int> circuito)
+{
+    for (const auto & vertice : circuito)
+        cout << aeropuertos[vertice - 1].verNombre() << endl;
+    cout << aeropuertos[circuito[0] - 1].verNombre() << endl;
+}
+
+// --------------------------------------------------------------------------------------------- //
+
 bool perteneceCircuito(unsigned int verticeActual, unsigned int indice, vector<unsigned int> circuito)
 {
     for (unsigned int i = 0; i < indice; i++)
@@ -825,6 +878,8 @@ bool perteneceCircuito(unsigned int verticeActual, unsigned int indice, vector<u
     }
     return false;
 }
+
+// --------------------------------------------------------------------------------------------- //
 
 void circuitoHamiltoniano(const unsigned int &verticeInicio, const unsigned int &indice, vector<unsigned int> &circuito, vector<unsigned int> &circuitoMinimo, unsigned int &costoActual, unsigned int &costoMinimo)
 {
@@ -854,6 +909,7 @@ void circuitoHamiltoniano(const unsigned int &verticeInicio, const unsigned int 
                 circuitoMinimo = circuito; // El circuito mínimo se vuelve el guardado hasta el momento
                 costoMinimo = costoActual; // El costo mínimo se actualiza
             }
+            costoActual -= vuelo.verDistancia();
         }
     }
     else

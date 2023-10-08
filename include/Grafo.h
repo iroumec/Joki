@@ -111,7 +111,7 @@ ostream &operator<<(ostream &salida, const Grafo<C> &grafo)
 		typename list<typename Grafo<C>::Arco>::iterator ady = adyacentes.begin();
 		while (ady != adyacentes.end())
 		{
-			salida << "    " << *v << "-> " << ady->devolverAdyacente() << " (" << ady->devolverCosto() << ")\n";
+			salida << "    " << *v << "-> " << ady->devolverAdyacente() << "\n";
 			ady++;
 		}
 		v++;
