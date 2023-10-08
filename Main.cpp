@@ -50,7 +50,7 @@ void existeVueloDirecto();
 void generarListadoVuelosMismaAerolinea(const unsigned int &origen, const unsigned int &destino);
 
 void buscarCaminos(const unsigned int &origen, const unsigned int &destino, const string &aerolinea,
-                    double &distancia, unsigned int &escalas, list<unsigned int> &camino, vector<bool> &visitado, ofstream &archivo);
+                   double &distancia, unsigned int &escalas, list<unsigned int> &camino, vector<bool> &visitado, ofstream &archivo);
 
 void cargarCamino(const unsigned int &destino, const double &distancia, const unsigned int &escalas, const list<unsigned int> &camino, ofstream &archivo);
 
@@ -254,7 +254,7 @@ void cargarReservas(string path)
                 reservas.insert({nombre_aeropuerto_origen, nuevo_mapa});
             }
 
-            //cout << reservas[nombre_aeropuerto_origen][nombre_aeropuerto_destino].retornarAsientosReservados(aerolinea) << endl;
+            // cout << reservas[nombre_aeropuerto_origen][nombre_aeropuerto_destino].retornarAsientosReservados(aerolinea) << endl;
 
             numeroReservas++;
         }
@@ -492,7 +492,7 @@ void generarListadoReservas(string path)
                     asientosReservados = reservas[aeropuertoOrigen][aeropuertoDestino].retornarAsientosReservados(aerolinea);
                 }
 
-                catch(invalid_argument & exc)
+                catch (invalid_argument &exc)
                 {
                     asientosReservados = 0;
                 }
@@ -558,14 +558,14 @@ void solicitarDatos(unsigned int &origen, unsigned int &destino)
 void listarAeropuertos()
 {
     for (unsigned int i = 0; i < aeropuertos.size(); i++)
-        cout << CYAN << i+1 << ". " << RESET << aeropuertos[i].verNombre() << endl;
+        cout << CYAN << i + 1 << ". " << RESET << aeropuertos[i].verNombre() << endl;
 }
 
 void listarAerolineas()
 {
     unsigned int index = 1;
 
-    for (const string & aerolinea : aerolineas)
+    for (const string &aerolinea : aerolineas)
     {
         cout << CYAN << index << ". " << RESET << aerolinea << endl;
         index++;
@@ -585,9 +585,9 @@ string seleccionarAerolinea()
             // Mensaje de error
         }
 
-    } while(index > aerolineas.size());
+    } while (index > aerolineas.size());
 
-    for (const auto & aerolinea : aerolineas)
+    for (const auto &aerolinea : aerolineas)
     {
         if (element == index)
             return aerolinea;
@@ -608,9 +608,9 @@ unsigned int seleccionarAeropuerto()
             // Mensaje de error
         }
 
-    } while(index > aeropuertos.size());
+    } while (index > aeropuertos.size());
 
-    return index-1;
+    return index - 1;
 }
 
 // --------------------------------------------------------------------------------------------- //
@@ -650,7 +650,7 @@ void existeVueloDirecto()
                 asientosReservados = reservas[nombreAeropuertoOrigen][nombreAeropuertoDestino].retornarAsientosReservados(aerolinea);
             }
 
-            catch(invalid_argument & exc)
+            catch (invalid_argument &exc)
             {
                 asientosReservados = 0;
             }
@@ -664,7 +664,7 @@ void existeVueloDirecto()
         else
         {
             cout << RED << "No existe" << RESET << " un vuelo desde " << RED << nombreAeropuertoOrigen << RESET << " a " << RED << nombreAeropuertoDestino
-             << RESET << " a través de " << RED << aerolinea << RESET << endl;
+                 << RESET << " a través de " << RED << aerolinea << RESET << endl;
         }
     }
     else
@@ -713,7 +713,7 @@ void generarListadoVuelosMismaAerolinea(const unsigned int &origen, const unsign
 // ------------------------------------Búsqueda de Caminos-------------------------------------- //
 
 void buscarCaminos(const unsigned int &origen, const unsigned int &destino, const string &aerolinea,
-                    double &distancia, unsigned int &escalas, list<unsigned int> &camino, vector<bool> &visitado, ofstream &archivo)
+                   double &distancia, unsigned int &escalas, list<unsigned int> &camino, vector<bool> &visitado, ofstream &archivo)
 {
     Vuelo vuelo;
 
@@ -743,7 +743,7 @@ void buscarCaminos(const unsigned int &origen, const unsigned int &destino, cons
                 asientosReservados = reservas[nombreOrigen][nombreDestino].retornarAsientosReservados(aerolinea);
             }
 
-            catch(invalid_argument & exc)
+            catch (invalid_argument &exc)
             {
                 asientosReservados = 0;
             }
