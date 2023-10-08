@@ -88,14 +88,14 @@ Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo)
     list<Arco> arcos;
 
     // Por cada vértice en la lista de vértices...
-    for (const auto & vertice : vertices)
+    for (const auto &vertice : vertices)
     {
         agregarVertice(vertice);
 
         // Obtengo los arcos del vértice.
         otroGrafo.devolverAdyacentes(vertice, arcos);
 
-        for (const auto & arco : arcos)
+        for (const auto &arco : arcos)
             graph[vertice].insert({arco.devolverAdyacente(), arco.devolverCosto()});
 
         // Vacío la lista para darle lugar a la siguiente iteración.
@@ -172,7 +172,8 @@ const C &Grafo<C>::costoArco(int origen, int destino) const
     auto they = (it->second).find(destino);
 
     // Error si no está el destino.
-    assert(they != (it->second).end());
+    if (they == (it->second).end())
+        throw invalid_argument("No existe un arco entre el vértice de origen y el de destino");
 
     // Retorno el costo del arco.
     return (they->second);
@@ -184,7 +185,7 @@ template <typename C>
 void Grafo<C>::devolverVertices(list<int> &vertices) const
 {
     // Por cada vértice en el grafo...
-    for (const auto & vertice : graph)
+    for (const auto &vertice : graph)
         // Agrego el nombre
         vertices.push_back(vertice.first);
 }
@@ -201,7 +202,7 @@ void Grafo<C>::devolverAdyacentes(int origen, list<Arco> &adyacentes) const
     if (it != graph.end())
     {
         // Por cada adyacente
-        for (const auto & adyacente : (it->second))
+        for (const auto &adyacente : (it->second))
         {
             Arco nuevo_arco(adyacente.first, adyacente.second);
             adyacentes.push_back(nuevo_arco);
@@ -226,7 +227,7 @@ template <typename C>
 void Grafo<C>::eliminarVertice(int vertice_a_eliminar)
 {
     // Elimino los arcos que haya de otros vértices al que quiero eliminar.
-    for (const auto & vertice : graph)
+    for (const auto &vertice : graph)
     {
         if (vertice.first != vertice_a_eliminar)
             eliminarArco(vertice.first, vertice_a_eliminar);

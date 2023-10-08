@@ -58,7 +58,7 @@ public:
 
 	bool existeArco(int origen, int destino) const; // Consultar si existe un arco entre dos vértices.
 
-	// PRE CONDICION: existe_arco(origen, destino)
+	// PRE CONDICION: existeArco(origen, destino)
 	const C &costoArco(int origen, int destino) const; // Consultar por el costo del arco entre dos vértices.
 
 	void devolverVertices(list<int> &vertices) const;
