@@ -27,7 +27,7 @@ public:
 	public:
 		Arco(); // Constructor de la clase.
 
-		Arco(int adyacente, const C &costo); // Destructor de la clase.
+		Arco(const int & adyacente, const C &costo); // Destructor de la clase.
 
 		int devolverAdyacente() const; // Devolver el identificador del vértice adyacente.
 
@@ -54,31 +54,31 @@ public:
 
 	int devolverLongitud() const; // Consultar por la cantidad de vértices del grafo.
 
-	bool existeVertice(int vertice) const; // Consultar si existe un vértice en el grafo.
+	bool existeVertice(const int &vertice) const; // Consultar si existe un vértice en el grafo.
 
-	bool existeArco(int origen, int destino) const; // Consultar si existe un arco entre dos vértices.
+	bool existeArco(const int &origen, const int &destino) const; // Consultar si existe un arco entre dos vértices.
 
 	// PRE CONDICION: existeArco(origen, destino)
-	const C &costoArco(int origen, int destino) const; // Consultar por el costo del arco entre dos vértices.
+	const C &costoArco(const int &origen, const int &destino) const; // Consultar por el costo del arco entre dos vértices.
 
 	void devolverVertices(list<int> &vertices) const;
 
-	void devolverAdyacentes(int origen, list<Arco> &adyacentes) const;
+	void devolverAdyacentes(const int &origen, list<Arco> &adyacentes) const;
 
-	void agregarVertice(int vertice);
+	void agregarVertice(const int &vertice);
 
 	// POST CONDICION: Para todo vértice v != vertice: !existeArco(v, vertice) && !existeArco(vertice, v)
-	void eliminarVertice(int vertice);
+	void eliminarVertice(const int &vertice);
 
 	// PRE CONDICION: existeArco(origen, destino)
-	void modificarCostoArco(int origen, int destino, const C &costo);
+	void modificarCostoArco(const int &origen, const int &destino, const C &costo);
 
 	// PRE CONDICION: existeVertice(origen) && existeVertice(destino)
 	// POST CONDICION: existeArco(origen, destino)
-	void agregarArco(int origen, int destino, const C &costo);
+	void agregarArco(const int &origen, const int &destino, const C &costo);
 
 	// POST CONDICION: !existeArco(origen, destino)
-	void eliminarArco(int origen, int destino);
+	void eliminarArco(const int &origen, const int &destino);
 
 	void vaciar();
 

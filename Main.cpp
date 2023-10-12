@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
-#include <locale>
+//#include <locale>
+#include <Windows.h>
 
 #include <set>
 #include <map>
@@ -67,7 +68,7 @@ void circuitoHamiltoniano(const unsigned int &verticeInicio, const unsigned int 
 /**                                     Variables Globales                                      **/
 // --------------------------------------------------------------------------------------------- //
 
-int INF = 1e9;
+const int INF = 1e9;
 
 unsigned int numeroReservas = 0;
 
@@ -85,15 +86,15 @@ Grafo<Vuelo> redDeViajes;
 
 int main()
 {
-    setlocale(LC_ALL, "");
+    SetConsoleOutputCP(CP_UTF8);
 
     // En cada inicialización del programa, se eliminan aquellos archivos viejos de antiguas ejecuciones.
     filesystem::path carpeta("outputs");
     eliminarArchivosAntiguos(carpeta);
 
-    cargarAeropuertos("datasets/Aeropuertos2.txt");
-    cargarReservas("datasets/Reservas2.txt");
-    cargarRutas("datasets/Rutas3.txt");
+    cargarAeropuertos("datasets/Aeropuertos.txt");
+    cargarReservas("datasets/Reservas.txt");
+    cargarRutas("datasets/Rutas.txt");
 
     desplegarMenu();
 
@@ -305,7 +306,7 @@ void cargarReservas(string path)
 
 void desplegarMenu()
 {
-    wcout << CYAN << L"¡Bienvenido a la red de viajes Joki!\n"
+    cout << CYAN << "¡Bienvenido a la red de viajes Joki!\n"
           << RESET << endl;
     char option;
     bool listadoGenerado = false;
@@ -313,17 +314,17 @@ void desplegarMenu()
     vector<unsigned int> circuito, circuitoMinimo;
     do
     {
-        wcout << CYAN << "Estas son las opciones disponibles en nuestro sistema:\n"
+        cout << CYAN << "Estas son las opciones disponibles en nuestro sistema:\n"
               << RESET << endl
               << CYAN << "1. " << RESET << "Listar todos los aeropuertos" << endl
               << CYAN << "2. " << RESET << "Listar todas las reservas realizadas" << endl
-              << CYAN << "3. " << RESET << L"Verificar si existe un vuelo directo entre dos aeropuertos a través de una aerolínea" << endl
-              << CYAN << "4. " << RESET << L"Listar todos los vuelos posibles de un origen a un destino a través de una misma aerolínea" << endl
+              << CYAN << "3. " << RESET << "Verificar si existe un vuelo directo entre dos aeropuertos a través de una aerolínea" << endl
+              << CYAN << "4. " << RESET << "Listar todos los vuelos posibles de un origen a un destino a través de una misma aerolínea" << endl
               << CYAN << "5. " << RESET << "Circuito de aeropuertos" << endl
               << CYAN << "6. " << RESET << "Ir al apartado de archivos" << endl
               << CYAN << "7. " << RESET << "Salir\n"
               << endl
-              << CYAN << L"Me gustaría: " << RESET;
+              << CYAN << "Me gustaría: " << RESET;
 
         cin >> option;
 
@@ -389,14 +390,14 @@ void desplegarMenu()
         case '7':
             break;
         default:
-            wcout << RED << L"La opción ingresada no es válida. Revise lo ingresado.\n"
+            cout << RED << "La opción ingresada no es válida. Revise lo ingresado.\n"
                   << RESET;
         }
         if (listadoGenerado)
         {
-            wcout << CYAN << L"¡Listado generado! " << RESET << "\n\nPuede verlo en el "
+            cout << CYAN << "¡Listado generado! " << RESET << "\n\nPuede verlo en el "
                   << CYAN << "apartado de archivos" << RESET
-                  << L" del menú de opciones." << endl;
+                  << " del menú de opciones." << endl;
             listadoGenerado = false;
         }
         if ((option != '6' && option != '7'))
@@ -408,7 +409,7 @@ void desplegarMenu()
         }
     } while (option != '7');
     system("cls");
-    wcout << CYAN << L"¡Gracias por utilizar el servicio!" << RESET << endl;
+    cout << CYAN << "¡Gracias por utilizar el servicio!" << RESET << endl;
 }
 
 // --------------------------------------------------------------------------------------------- //
@@ -427,14 +428,14 @@ void desplegarApartadoArchivos()
     unsigned int origen, destino;
     do
     {
-        wcout << CYAN << "Elija el archivo que desea visualizar:\n"
+        cout << CYAN << "Elija el archivo que desea visualizar:\n"
               << RESET << endl
               << CYAN << "1. " << RESET << "Listado de aeropuertos" << endl
               << CYAN << "2. " << RESET << "Listado de reservas" << endl
               << CYAN << "3. " << RESET << "Listado de vuelos de un origen a un destino a través de una misma aerolínea" << endl
-              << CYAN << "4. " << RESET << L"Volver al menú principal\n"
+              << CYAN << "4. " << RESET << "Volver al menú principal\n"
               << endl
-              << CYAN << L"Me gustaría visualizar el: " << RESET;
+              << CYAN << "Me gustaría visualizar el: " << RESET;
 
         cin >> option;
 
@@ -456,7 +457,7 @@ void desplegarApartadoArchivos()
         case '4':
             break;
         default:
-            wcout << RED << L"La opción ingresada no es válida. Revise lo ingresado.\n"
+            cout << RED << "La opción ingresada no es válida. Revise lo ingresado.\n"
                   << RESET;
         }
         if (option != '4')
@@ -476,7 +477,7 @@ void mostrarArchivo(string path)
     ifstream archivo(path.c_str());
 
     if (!archivo.is_open())
-        wcout << L"No existe ningún archivo generado para la opción elegida." << endl;
+        cout << "No existe ningún archivo generado para la opción elegida." << endl;
     else
     {
         string linea;
@@ -607,14 +608,14 @@ void solicitarDatos(unsigned int &origen, unsigned int &destino, string &aerolin
     cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
     origen = seleccionarAeropuerto();
 
-    cout << CYAN << "\n- Seleccione un aeropuerto de origen: " << RESET;
+    cout << CYAN << "\n- Seleccione un aeropuerto de destino: " << RESET;
     destino = seleccionarAeropuerto();
 
     system("cls");
 
     listarAerolineas();
 
-    wcout << CYAN << L"\n- Seleccione una aerolínea: " << RESET;
+    cout << CYAN << "\n- Seleccione una aerolínea: " << RESET;
     aerolinea = seleccionarAerolinea();
 
     system("cls");

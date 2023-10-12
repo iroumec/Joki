@@ -13,7 +13,7 @@ Grafo<C>::Arco::Arco()
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-Grafo<C>::Arco::Arco(int adyacente, const C &costo)
+Grafo<C>::Arco::Arco(const int &adyacente, const C &costo)
 {
     // El atributo vértice se torna el pasado por parámetro.
     vertice = adyacente;
@@ -124,7 +124,7 @@ int Grafo<C>::devolverLongitud() const
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-bool Grafo<C>::existeVertice(int vertice) const
+bool Grafo<C>::existeVertice(const int &vertice) const
 {
     // Busco el vértice.
     auto it = graph.find(vertice);
@@ -136,7 +136,7 @@ bool Grafo<C>::existeVertice(int vertice) const
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-bool Grafo<C>::existeArco(int origen, int destino) const
+bool Grafo<C>::existeArco(const int &origen, const int &destino) const
 {
     bool found = false;
 
@@ -160,7 +160,7 @@ bool Grafo<C>::existeArco(int origen, int destino) const
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-const C &Grafo<C>::costoArco(int origen, int destino) const
+const C &Grafo<C>::costoArco(const int &origen, const int &destino) const
 {
     // Busco el vértice de origen.
     auto it = graph.find(origen);
@@ -193,7 +193,7 @@ void Grafo<C>::devolverVertices(list<int> &vertices) const
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::devolverAdyacentes(int origen, list<Arco> &adyacentes) const
+void Grafo<C>::devolverAdyacentes(const int &origen, list<Arco> &adyacentes) const
 {
     // Obtengo un iterador al vértice
     auto it = graph.find(origen);
@@ -213,7 +213,7 @@ void Grafo<C>::devolverAdyacentes(int origen, list<Arco> &adyacentes) const
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::agregarVertice(int vertice)
+void Grafo<C>::agregarVertice(const int &vertice)
 {
     map<int, C> arcos;
 
@@ -224,24 +224,24 @@ void Grafo<C>::agregarVertice(int vertice)
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::eliminarVertice(int vertice_a_eliminar)
+void Grafo<C>::eliminarVertice(const int &verticeAEliminar)
 {
     // Elimino los arcos que haya de otros vértices al que quiero eliminar.
     for (const auto &vertice : graph)
     {
-        if (vertice.first != vertice_a_eliminar)
-            eliminarArco(vertice.first, vertice_a_eliminar);
+        if (vertice.first != verticeAEliminar)
+            eliminarArco(vertice.first, verticeAEliminar);
     }
 
     // Eliminando el vértice, ya elimino los arcos de él a los demás;
     // pero no los de los demás a él. Por eso el bucle de arriba.
-    graph.erase(vertice_a_eliminar);
+    graph.erase(verticeAEliminar);
 }
 
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::modificarCostoArco(int origen, int destino, const C &costo)
+void Grafo<C>::modificarCostoArco(const int &origen, const int &destino, const C &costo)
 {
     // Obtengo un iterador a la posición donde se halle la clave del parámetro origen
     auto it = graph.find(origen);
@@ -260,7 +260,7 @@ void Grafo<C>::modificarCostoArco(int origen, int destino, const C &costo)
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::agregarArco(int origen, int destino, const C &costo)
+void Grafo<C>::agregarArco(const int &origen, const int &destino, const C &costo)
 {
     // Agrego el par al mapa correspondiente al vértice de origen
     graph[origen].insert({destino, costo});
@@ -269,7 +269,7 @@ void Grafo<C>::agregarArco(int origen, int destino, const C &costo)
 // --------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::eliminarArco(int origen, int destino)
+void Grafo<C>::eliminarArco(const int &origen, const int &destino)
 {
     // Busco un iterador al elemento que quiero eliminar
     auto it = graph.find(origen);
