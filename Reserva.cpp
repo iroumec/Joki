@@ -4,23 +4,40 @@ Reserva::Reserva()
 {
 }
 
-Reserva::~Reserva() // O(n)
+Reserva::Reserva(const std::string &origen, const std::string &destino, const std::string &aerolinea, const unsigned int &asientosResevados, const unsigned int &asientosTotales)
 {
-    reservas.clear();
+    this->aeropuertoOrigen = origen;
+    this->aeropuertoDestino = destino;
+    this->aerolinea = aerolinea;
+    this->asientosReservados = asientosReservados;
+    this->asientosTotales = asientosTotales;
 }
 
-void Reserva::agregarReserva(const string & aerolinea, const unsigned int & asientos_reservados) // O(log n)
+std::string Reserva::retornarOrigen() const
 {
-    reservas.insert({aerolinea, asientos_reservados});
+    return aeropuertoOrigen;
 }
 
-unsigned int Reserva::retornarAsientosReservados(const string & aerolinea) const // O(log n)
+std::string Reserva::retornarDestino() const
 {
-    auto it = reservas.find(aerolinea);
-
-    if (it == reservas.end())
-        throw invalid_argument("Arguemnto inválido: la aerolínea no se encuentra en el mapa");
-
-    return (it->second);
+    return aeropuertoDestino;
 }
 
+std::string Reserva::retornarAerolinea() const
+{
+    return aerolinea;
+}
+
+unsigned int retornarAsientosReservados() const
+{
+    return asientosReservados;
+}
+
+unsigned int retornarAsientosTotales() const
+{
+    return asientosTotales;
+}
+
+Reserva::~Reserva()
+{
+}
