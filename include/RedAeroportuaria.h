@@ -11,17 +11,15 @@ public:
     class Aeropuerto
     {
     public:
-        Aeropuerto();
-
         Aeropuerto(const std::string &nombre, const std::string &ciudad, const std::string &pais);
 
         ~Aeropuerto();
 
-        std::string verNombre() const; // Consultar el nombre del aeropuerto.
-
-        std::string verCiudad() const; // Consultar la ciudad del aeropuerto.
-
         std::string verPais() const;
+
+        std::string verNombre() const;
+
+        std::string verCiudad() const;
 
     private:
         std::string nombre, ciudad, pais;
@@ -32,23 +30,23 @@ public:
     public:
         Vuelo();
 
-        Vuelo(const bool &cabotaje, const double &distancia);
+        ~Vuelo();
 
         Vuelo(const Vuelo &otroVuelo);
 
-        ~Vuelo();
-
         Vuelo &operator=(const Vuelo &otroVuelo);
+
+        Vuelo(const bool &cabotaje, const double &distancia);
+
+        void modificarAsientosReservados(const std::string &aerolinea, const unsigned int &reservas);
 
         void agregarAerolinea(const std::string &nombreAerolinea, const unsigned int &asientosTotales);
 
-        void modificarAsientosReservados(const std::string &aerolinea, const unsigned int &reservas);
+        bool esCabotaje() const;
 
         double verDistancia() const;
 
         unsigned int verCantidadVuelos() const;
-
-        bool esCabotaje() const;
 
         bool existeAerolinea(const std::string &aerolinea) const;
 
@@ -67,7 +65,8 @@ public:
     class Reserva
     {
     public:
-        Reserva(const std::string &origen, const std::string &destino, const std::string &aerolinea, const unsigned int &asientosResevados, const unsigned int &asientosTotales);
+        Reserva(const std::string &origen, const std::string &destino, const std::string &aerolinea,
+                const unsigned int &asientosResevados, const unsigned int &asientosTotales);
 
         ~Reserva();
 
@@ -146,7 +145,7 @@ private:
 
     unsigned int numeroReservas = 0;
 
-    std::map<std::string, std::map<std::string, std::map<std::string, unsigned int>>> reservas; // Mapa de mapas con las reservas
+    std::map<std::string, std::map<std::string, std::map<std::string, unsigned int>>> reservas; // Estructura para almacenar las reservas
 
     std::set<std::string> aerolineas; // Conjunto con todas las aerolíneas de la red de viaje.
 

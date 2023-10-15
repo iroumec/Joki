@@ -1,10 +1,49 @@
 #include "RedAeroportuaria.h"
 
 // ----------------------------------------------------------------------------------------------------------------- //
+//                                              Subclase Aeropuerto                                                  //
+// ----------------------------------------------------------------------------------------------------------------- //
+
+RedAeroportuaria::Aeropuerto::Aeropuerto(const std::string &nombre, const std::string &ciudad,
+                                         const std::string &pais) // O(1)
+{
+    this->nombre = nombre;
+    this->ciudad = ciudad;
+    this->pais = pais;
+}
+
+// ----------------------------------------------------------------------------------------------------------------- //
+
+RedAeroportuaria::Aeropuerto::~Aeropuerto() // O(1)
+{
+}
+
+// ----------------------------------------------------------------------------------------------------------------- //
+
+std::string RedAeroportuaria::Aeropuerto::verNombre() const // O(1)
+{
+    return nombre;
+}
+
+// ----------------------------------------------------------------------------------------------------------------- //
+
+std::string RedAeroportuaria::Aeropuerto::verCiudad() const // O(1)
+{
+    return ciudad;
+}
+
+// ----------------------------------------------------------------------------------------------------------------- //
+
+std::string RedAeroportuaria::Aeropuerto::verPais() const // O(1)
+{
+    return pais;
+}
+
+// ----------------------------------------------------------------------------------------------------------------- //
 //                                                 Subclase Vuelo                                                    //
 // ----------------------------------------------------------------------------------------------------------------- //
 
-RedAeroportuaria::Vuelo::Vuelo(const bool &cabotaje, const double &distancia)
+RedAeroportuaria::Vuelo::Vuelo(const bool &cabotaje, const double &distancia) // O(1)
 {
     this->cabotaje = cabotaje;
     this->distancia = distancia;
@@ -12,9 +51,8 @@ RedAeroportuaria::Vuelo::Vuelo(const bool &cabotaje, const double &distancia)
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-RedAeroportuaria::Vuelo::~Vuelo()
+RedAeroportuaria::Vuelo::~Vuelo() // O(log k), siendo k el número de aerolíneas que posibilitan el vuelo
 {
-    // Vac�o el std::mapa de aerol�neas y sus respectivas reservas.
     vuelos.clear();
 }
 
@@ -27,7 +65,7 @@ RedAeroportuaria::Vuelo::Vuelo(const Vuelo &otroVuelo)
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-RedAeroportuaria::Vuelo::Vuelo()
+RedAeroportuaria::Vuelo::Vuelo() // O(1)
 {
     this->cabotaje = false;
     this->distancia = 0;
@@ -37,7 +75,6 @@ RedAeroportuaria::Vuelo::Vuelo()
 
 RedAeroportuaria::Vuelo& RedAeroportuaria::Vuelo::operator=(const Vuelo &otroVuelo)
 {
-    // Limpio la estructura.
     vuelos.clear();
 
     this->cabotaje = otroVuelo.esCabotaje();
@@ -176,52 +213,6 @@ unsigned int RedAeroportuaria::Reserva::retornarAsientosTotales() const // O(1)
 
 RedAeroportuaria::Reserva::~Reserva() // O(1)
 {
-}
-
-// ----------------------------------------------------------------------------------------------------------------- //
-//                                              Subclase Aeropuerto                                                  //
-// ----------------------------------------------------------------------------------------------------------------- //
-
-RedAeroportuaria::Aeropuerto::Aeropuerto() // O(1)
-{
-}
-
-// ----------------------------------------------------------------------------------------------------------------- //
-
-RedAeroportuaria::Aeropuerto::Aeropuerto(const std::string &nombre, const std::string &ciudad,
-                                         const std::string &pais) // O(1)
-{
-    // Cargo los datos del aeropuerto.
-    this->nombre = nombre;
-    this->ciudad = ciudad;
-    this->pais = pais;
-}
-
-// ----------------------------------------------------------------------------------------------------------------- //
-
-RedAeroportuaria::Aeropuerto::~Aeropuerto() // O(1)
-{
-}
-
-// ----------------------------------------------------------------------------------------------------------------- //
-
-std::string RedAeroportuaria::Aeropuerto::verNombre() const // O(1)
-{
-    return nombre;
-}
-
-// ----------------------------------------------------------------------------------------------------------------- //
-
-std::string RedAeroportuaria::Aeropuerto::verCiudad() const // O(1)
-{
-    return ciudad;
-}
-
-// ----------------------------------------------------------------------------------------------------------------- //
-
-std::string RedAeroportuaria::Aeropuerto::verPais() const // O(1)
-{
-    return pais;
 }
 
 // ----------------------------------------------------------------------------------------------------------------- //

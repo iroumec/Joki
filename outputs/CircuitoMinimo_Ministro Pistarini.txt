@@ -1,0 +1,5 @@
+Circuito de mínimo costo con origen en Ministro Pistarini: 
+
+Ministro Pistarini -> Jorge Newbery -> Pucon -> Comodoro Benitez -> La Araucania -> Ministro Pistarini
+
+Distancia a recorrer: 7 kilómetros

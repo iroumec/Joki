@@ -4,7 +4,6 @@
 #include <iostream>
 #include <list>
 #include <map>
-#include "Vuelo.h"
 
 template <typename C>
 class Grafo

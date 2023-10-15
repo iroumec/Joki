@@ -11,7 +11,6 @@
 #include <map>
 #include <list>
 #include <vector>
-#include <string>
 #include "Colors.h"
 #include "RedAeroportuaria.h"
 
@@ -21,39 +20,39 @@ using namespace std;
 //                                               Prototipos de Funciones                                             //
 // ----------------------------------------------------------------------------------------------------------------- //
 
-void cargarAeropuertos(string path);
-void cargarReservas(string path);
-void cargarAerolineasRutas(string aerolineas, string origen, string destino, RedAeroportuaria::Vuelo &nuevoVuelo);
 void cargarRutas(string path);
+void cargarReservas(string path);
+void cargarAeropuertos(string path);
+void cargarAerolineasRutas(string aerolineas, string origen, string destino, RedAeroportuaria::Vuelo &nuevoVuelo);
 
-void listarAeropuertos();
 void listarAerolineas();
+void listarAeropuertos();
 
-unsigned int seleccionarAeropuerto();
 string seleccionarAerolinea();
+unsigned int seleccionarAeropuerto();
 
 void solicitarDatos(unsigned int &origen);
 void solicitarDatos(unsigned int &origen, unsigned int &destino);
 void solicitarDatos(unsigned int &origen, unsigned int &destino, string &aerolinea);
-
-void eliminarArchivosAntiguos(const filesystem::path &carpeta);
 
 void desplegarMenu();
 void desplegarApartadoArchivos();
 
 void mostrarArchivo(string path);
 
-void generarListadoAeropuertos(string path);
-
 void generarListadoReservas(string path);
 
+void generarListadoAeropuertos(string path);
+
+void eliminarArchivosAntiguos(const filesystem::path &carpeta);
+
 void existeVueloDirecto(const unsigned int &origen, const unsigned int &destino);
+
+void generarArchivoCircuito(const vector<unsigned int> & circuito, const double &distancia);
 
 void generarListadoVuelosMismaAerolinea(const unsigned int &origen, const unsigned int &destino);
 
 void cargarCamino(const pair<list<string>, double> &camino, const unsigned int &destino, ofstream &archivo);
-
-void generarArchivoCircuito(const vector<unsigned int> & circuito, const double &distancia);
 
 // ----------------------------------------------------------------------------------------------------------------- //
 //                                               Variables Globales                                                  //
@@ -69,7 +68,6 @@ int main()
 {
     SetConsoleOutputCP(CP_UTF8);
 
-    // En cada inicialización del programa, se eliminan aquellos archivos viejos de antiguas ejecuciones.
     filesystem::path carpeta("outputs");
     eliminarArchivosAntiguos(carpeta);
 
@@ -659,18 +657,24 @@ void listarAerolineas()
 
 string seleccionarAerolinea()
 {
-    unsigned int index, element = 1;
+    int index, element = 1;
 
     do
     {
         cin >> index;
 
-        if (index > redDeViajes.numeroAerolineas())
+        if (cin.fail())
         {
-            // Mensaje de error
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << CYAN << "\nEntrada inválida. Lo ingresado no es un número. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
+        }
+        else if (index <= 0 || index > redDeViajes.numeroAerolineas())
+        {
+            cout << CYAN << "\nEl número ingresado no le corresponde a ningún aerolínea. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
         }
 
-    } while (index > redDeViajes.numeroAerolineas());
+    } while (index <= 0 || index > redDeViajes.numeroAerolineas());
 
     list<string> aerolineas;
 
@@ -688,18 +692,24 @@ string seleccionarAerolinea()
 
 unsigned int seleccionarAeropuerto()
 {
-    unsigned int index;
+    int index;
 
     do
     {
         cin >> index;
 
-        if (index > redDeViajes.numeroAeropuertos())
+        if (cin.fail())
         {
-            // Mensaje de error
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << CYAN << "\nEntrada inválida. Lo ingresado no es un número. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
+        }
+        else if (index <= 0 || index > redDeViajes.numeroAeropuertos())
+        {
+            cout << CYAN << "\nEl número ingresado no le corresponde a ningún aeropuerto. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
         }
 
-    } while (index > redDeViajes.numeroAeropuertos());
+    } while (index <= 0 || index > redDeViajes.numeroAeropuertos());
 
     return index - 1;
 }

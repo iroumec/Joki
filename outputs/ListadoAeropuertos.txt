@@ -1,0 +1,7 @@
+Aeropuertos en nuestro sistema:
+
+- Jorge Newbery (CABA, ARG).
+- Ministro Pistarini (Ezeiza, ARG).
+- Comodoro Benitez (Santiago, CHI).
+- La Araucania (Araucania, CHI).
+- Pucon (Pucon, CHI).
