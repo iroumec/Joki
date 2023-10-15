@@ -1,155 +1,143 @@
 #include "Grafo.h"
-#include <cassert>
+#include "RedAeroportuaria.h"
 
-// --------------------------------------------------------------------------------------------- //
-/**                                   Implementación - Arco                                      **/
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
+//                                                  Subclase Arco                                                    //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-Grafo<C>::Arco::Arco()
+Grafo<C>::Arco::Arco() // O(1)
 {
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-Grafo<C>::Arco::Arco(const int &adyacente, const C &costo)
+Grafo<C>::Arco::Arco(const int &adyacente, const C &costo) // O(1)
 {
-    // El atributo vértice se torna el pasado por parámetro.
     vertice = adyacente;
 
-    // El atributo costo toma el valor del costo por parámetro.
     this->costo = costo;
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-int Grafo<C>::Arco::devolverAdyacente() const
+int Grafo<C>::Arco::devolverAdyacente() const // O(1)
 {
-    // Devuelvo el nombre del vértice adyacente.
     return vertice;
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::Arco::nuevoCosto(const C &costo)
+void Grafo<C>::Arco::nuevoCosto(const C &costo) // O(1)
 {
     this->costo = costo;
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-const C &Grafo<C>::Arco::devolverCosto() const
+const C &Grafo<C>::Arco::devolverCosto() const // O(1)
 {
     return costo;
 }
 
-// --------------------------------------------------------------------------------------------- //
-/**                                 Implementación - Grafo                                       **/
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
+//                                                  Clase Grafo                                                      //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-Grafo<C>::Grafo()
+Grafo<C>::Grafo() // O(1)
 {
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-Grafo<C>::Grafo(const Grafo &otroGrafo)
+Grafo<C>::Grafo(const Grafo &otroGrafo) // O(1)
 {
-    // Copio los valores del grafo actual al que se pasa por parámetro.
     *this = otroGrafo;
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-Grafo<C>::~Grafo()
+Grafo<C>::~Grafo() // O()
 {
-    graph.clear();
+    for (auto &arco : grafo)
+        arco.second.clear();
+
+    grafo.clear();
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo)
+Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo) // O(N^2 + NM + NK)
 {
-    // Vacío el grafo por si tenía algo antes.
-    graph.clear();
+    grafo.clear();
 
-    // Obtengo una lista con los vértices del grafo.
-    list<int> vertices;
+    std::list<int> vertices;
     otroGrafo.devolverVertices(vertices);
 
-    list<Arco> arcos;
+    std::list<Arco> arcos;
 
-    // Por cada vértice en la lista de vértices...
     for (const auto &vertice : vertices)
     {
         agregarVertice(vertice);
 
-        // Obtengo los arcos del vértice.
         otroGrafo.devolverAdyacentes(vertice, arcos);
 
         for (const auto &arco : arcos)
-            graph[vertice].insert({arco.devolverAdyacente(), arco.devolverCosto()});
+            grafo[vertice].insert({arco.devolverAdyacente(), arco.devolverCosto()});
 
-        // Vacío la lista para darle lugar a la siguiente iteración.
         arcos.clear();
     }
 
     return *this;
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-bool Grafo<C>::estaVacio() const
+bool Grafo<C>::estaVacio() const // O(1)
 {
-    return graph.empty();
+    return grafo.empty();
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-int Grafo<C>::devolverLongitud() const
+int Grafo<C>::devolverLongitud() const // O(1)
 {
-    return graph.size();
+    return grafo.size();
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-bool Grafo<C>::existeVertice(const int &vertice) const
+bool Grafo<C>::existeVertice(const int &vertice) const // O(log n), siendo n el nÃºmero de vÃ©rtices
 {
-    // Busco el vértice.
-    auto it = graph.find(vertice);
+    auto it = grafo.find(vertice);
 
-    // Retorno si lo encontré.
-    return (it != graph.end());
+    return (it != grafo.end());
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-bool Grafo<C>::existeArco(const int &origen, const int &destino) const
+bool Grafo<C>::existeArco(const int &origen, const int &destino) const // O(log n), siendo n el nÃºmero de vÃ©rtices
 {
     bool found = false;
 
-    // Busco el vértice de origen.
-    auto it = graph.find(origen);
+    auto it = grafo.find(origen);
 
-    // Si lo encuentro...
-    if (it != graph.end())
+    if (it != grafo.end())
     {
-        // Busco el vértice de destino...
         auto they = (it->second).find(destino);
 
-        // Si lo encuentro...
         if (they != (it->second).end())
             found = true;
     }
@@ -157,51 +145,45 @@ bool Grafo<C>::existeArco(const int &origen, const int &destino) const
     return found;
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-const C &Grafo<C>::costoArco(const int &origen, const int &destino) const
+const C &Grafo<C>::costoArco(const int &origen, const int &destino) const // O(log n), siendo n el nÃºmero de vÃ©rtices
 {
-    // Busco el vértice de origen.
-    auto it = graph.find(origen);
+    // Busco el vÃ©rtice de origen.
+    auto it_origen = grafo.find(origen);
 
-    // Error si no está el origen.
-    assert(it != graph.end());
+    if (it_origen == grafo.end())
+        throw std::invalid_argument("No existe el vÃ©rtice de origen");
 
-    // Busco el vértice adyacente.
-    auto they = (it->second).find(destino);
+    // Busco el vÃ©rtice adyacente.
+    auto it_adyacente = (it_origen->second).find(destino);
 
-    // Error si no está el destino.
-    if (they == (it->second).end())
-        throw invalid_argument("No existe un arco entre el vértice de origen y el de destino");
+    if (it_adyacente == (it_origen->second).end())
+        throw std::invalid_argument("No existe un arco entre el vÃ©rtice de origen y el de destino");
 
-    // Retorno el costo del arco.
-    return (they->second);
+    return (it_adyacente->second);
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::devolverVertices(list<int> &vertices) const
+void Grafo<C>::devolverVertices(std::list<int> &vertices) const // O(n), siendo n el nÃºmero de vÃ©rtices
 {
-    // Por cada vértice en el grafo...
-    for (const auto &vertice : graph)
-        // Agrego el nombre
+    for (const auto &vertice : grafo)
         vertices.push_back(vertice.first);
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::devolverAdyacentes(const int &origen, list<Arco> &adyacentes) const
+void Grafo<C>::devolverAdyacentes(const int &origen, std::list<Arco> &adyacentes) const
+// O(max{log n, m}), siendo n el nÃºmero de vÃ©rtices y m, la cantidad de adyacentes del vÃ©rtice origen.
 {
-    // Obtengo un iterador al vértice
-    auto it = graph.find(origen);
+    auto it = grafo.find(origen);
 
-    // Si encuentro el vértice de origen...
-    if (it != graph.end())
+    if (it != grafo.end())
     {
-        // Por cada adyacente
         for (const auto &adyacente : (it->second))
         {
             Arco nuevo_arco(adyacente.first, adyacente.second);
@@ -210,93 +192,84 @@ void Grafo<C>::devolverAdyacentes(const int &origen, list<Arco> &adyacentes) con
     }
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::agregarVertice(const int &vertice)
+void Grafo<C>::agregarVertice(const int &vertice) // O(log n), siendo n el nÃºmero de vÃ©rtices
 {
-    map<int, C> arcos;
+    std::map<int, C> arcos;
 
-    // Cargo en el mapa el vértice como clave y la lista de adyacentes vacía como valor.
-    graph.insert({vertice, arcos});
+    grafo.insert({vertice, arcos});
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::eliminarVertice(const int &verticeAEliminar)
+void Grafo<C>::eliminarVertice(const int &verticeAEliminar) // O(n log n), siendo n el nÃºmero de vÃ©rtices
 {
-    // Elimino los arcos que haya de otros vértices al que quiero eliminar.
-    for (const auto &vertice : graph)
+    // Elimino los arcos que haya de otros vÃ©rtices al que quiero eliminar.
+    for (const auto &vertice : grafo)
     {
         if (vertice.first != verticeAEliminar)
             eliminarArco(vertice.first, verticeAEliminar);
     }
 
-    // Eliminando el vértice, ya elimino los arcos de él a los demás;
-    // pero no los de los demás a él. Por eso el bucle de arriba.
-    graph.erase(verticeAEliminar);
+    grafo.erase(verticeAEliminar);
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
 void Grafo<C>::modificarCostoArco(const int &origen, const int &destino, const C &costo)
+// O(log n), siendo n el nÃºmero de vÃ©rtices
 {
-    // Obtengo un iterador a la posición donde se halle la clave del parámetro origen
-    auto it = graph.find(origen);
+    auto it = grafo.find(origen);
 
-    // Si encontré el vértice origen...
-    if (it != graph.end())
+    if (it != grafo.end())
     {
         auto they = (it->second).find(destino);
 
-        // Si encontré el destino...
         if (they != (it->second).end())
             (they->second) = costo;
     }
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
 void Grafo<C>::agregarArco(const int &origen, const int &destino, const C &costo)
+// O(max{log n, log m}), siendo n el nÃºmero de vÃ©rtices y m, el nÃºmero de adyacentes del origen
 {
-    // Agrego el par al mapa correspondiente al vértice de origen
-    graph[origen].insert({destino, costo});
+    grafo[origen].insert({destino, costo});
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::eliminarArco(const int &origen, const int &destino)
+void Grafo<C>::eliminarArco(const int &origen, const int &destino) // O(log n), siendo n el nÃºmero de vÃ©rtices
 {
-    // Busco un iterador al elemento que quiero eliminar
-    auto it = graph.find(origen);
+    auto it = grafo.find(origen);
 
-    // En caso de haberlo encontrado...
-    if (it != graph.end())
+    if (it != grafo.end())
     {
-        // Busco el vértice adyacente en el mapa
         auto they = (it->second).find(destino);
 
-        // Si lo encontré, lo elimino.
         if (they != (it->second).end())
             (it->second).erase(they);
     }
 }
 
-// --------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-void Grafo<C>::vaciar()
+void Grafo<C>::vaciar() //
 {
-    graph.clear();
+    grafo.clear();
 }
 
 template class Grafo<int>;
 template class Grafo<char>;
-template class Grafo<string>;
+template class Grafo<std::string>;
 template class Grafo<float>;
 template class Grafo<double>;
-template class Grafo<Vuelo>;
+template class Grafo<RedAeroportuaria::Vuelo>;

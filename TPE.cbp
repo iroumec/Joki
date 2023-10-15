@@ -34,25 +34,19 @@
 			<Add directory="C:/Users/inaki/OneDrive/Documentos/CodeBlocks/TPE/" />
 			<Add directory="include" />
 		</Compiler>
-		<Unit filename="Aeropuerto.cpp" />
 		<Unit filename="Grafo.cpp" />
 		<Unit filename="Main.cpp" />
-		<Unit filename="MinHeap.cpp" />
 		<Unit filename="RedAeroportuaria.cpp" />
-		<Unit filename="Reserva.cpp" />
-		<Unit filename="Sets.cpp" />
-		<Unit filename="Vuelo.cpp" />
 		<Unit filename="datasets/Aeropuertos.txt" />
+		<Unit filename="datasets/Aeropuertos2.txt" />
 		<Unit filename="datasets/Reservas.txt" />
+		<Unit filename="datasets/Reservas2.txt" />
 		<Unit filename="datasets/Rutas.txt" />
-		<Unit filename="include/Aeropuerto.h" />
+		<Unit filename="datasets/Rutas2.txt" />
+		<Unit filename="datasets/Rutas3.txt" />
 		<Unit filename="include/Colors.h" />
 		<Unit filename="include/Grafo.h" />
-		<Unit filename="include/MinHeap.h" />
 		<Unit filename="include/RedAeroportuaria.h" />
-		<Unit filename="include/Reserva.h" />
-		<Unit filename="include/Sets.h" />
-		<Unit filename="include/Vuelo.h" />
 		<Extensions>
 			<code_completion>
 				<search_path add="include" />
