@@ -66,7 +66,7 @@ public:
     {
     public:
         Reserva(const std::string &origen, const std::string &destino, const std::string &aerolinea,
-                const unsigned int &asientosResevados, const unsigned int &asientosTotales);
+                const unsigned int &asientosReservados, const unsigned int &asientosTotales);
 
         ~Reserva();
 
@@ -88,7 +88,7 @@ public:
     RedAeroportuaria();
     ~RedAeroportuaria();
 
-    std::string nombreAeropuerto(const unsigned int &identificador);
+    std::string nombreAeropuerto(const unsigned int &identificador) const;
 
     void agregarAeropuerto(const std::string &nombre, const std::string &ciudad, const std::string &pais);
 
@@ -101,8 +101,6 @@ public:
     bool estaVacia() const;
 
     bool existeAeropuerto(const unsigned int &aeropuerto) const;
-
-    unsigned int retornarNumeroReservas() const;
 
     void generarListadoAeropuertos();
 
@@ -124,6 +122,10 @@ public:
 
     unsigned int numeroAerolineas() const;
 
+    unsigned int numeroReservas() const;
+
+    bool existeReserva(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino, const std::string & aerolinea) const;
+
     unsigned int devolverAsientosReservados(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino, const std::string &aerolinea) const;
 
     unsigned int devolverAsientosDisponibles(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino, const std::string &aerolinea) const;
@@ -143,7 +145,7 @@ private:
 private:
     const int INF = 1e9;
 
-    unsigned int numeroReservas = 0;
+    unsigned int cantidadReservas = 0;
 
     std::map<std::string, std::map<std::string, std::map<std::string, unsigned int>>> reservas; // Estructura para almacenar las reservas
 

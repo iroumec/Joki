@@ -2,7 +2,7 @@ Jorge Newbery,CABA,ARG
 Ministro Pistarini,Ezeiza,ARG
 Comodoro Benitez,Santiago,CHI
 La Araucania,Araucania,CHI
-Pucon, Pucon,CHI
+Pucon,Pucon,CHI
 Campinas,San Pablo,BRA
 John F. Kennedy,New York,USA
 Trenton-Mercer,New Jersey,USA

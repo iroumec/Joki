@@ -148,7 +148,9 @@ bool Grafo<C>::existeArco(const int &origen, const int &destino) const // O(log 
 // ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
-const C &Grafo<C>::costoArco(const int &origen, const int &destino) const // O(log n), siendo n el número de vértices
+const C &Grafo<C>::costoArco(const int &origen, const int &destino) const
+// O(log n), siendo n el número de vértices.
+// Si bien se itera sobre sus adyacentes, el número de vértices totales siempre será mayor al número de adyacentes.
 {
     // Busco el vértice de origen.
     auto it_origen = grafo.find(origen);

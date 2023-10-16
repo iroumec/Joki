@@ -31,6 +31,8 @@ void listarAeropuertos();
 string seleccionarAerolinea();
 unsigned int seleccionarAeropuerto();
 
+string nombreAerolinea(const int &index);
+
 void solicitarDatos(unsigned int &origen);
 void solicitarDatos(unsigned int &origen, unsigned int &destino);
 void solicitarDatos(unsigned int &origen, unsigned int &destino, string &aerolinea);
@@ -46,13 +48,13 @@ void generarListadoAeropuertos(string path);
 
 void eliminarArchivosAntiguos(const filesystem::path &carpeta);
 
-void existeVueloDirecto(const unsigned int &origen, const unsigned int &destino);
-
 void generarArchivoCircuito(const vector<unsigned int> & circuito, const double &distancia);
 
 void generarListadoVuelosMismaAerolinea(const unsigned int &origen, const unsigned int &destino);
 
-void cargarCamino(const pair<list<string>, double> &camino, const unsigned int &destino, ofstream &archivo);
+void existeVueloDirecto(const unsigned int &origen, const unsigned int &destino, const string &aerolinea);
+
+void cargarCamino(const pair<list<string>, double> &recorrido, const unsigned int &destino, ofstream &archivo);
 
 // ----------------------------------------------------------------------------------------------------------------- //
 //                                               Variables Globales                                                  //
@@ -68,12 +70,13 @@ int main()
 {
     SetConsoleOutputCP(CP_UTF8);
 
+    // Elimino los archivos de ejecuciones anteriores
     filesystem::path carpeta("outputs");
     eliminarArchivosAntiguos(carpeta);
 
-    cargarAeropuertos("datasets/Aeropuertos2.txt");
-    cargarReservas("datasets/Reservas2.txt");
-    cargarRutas("datasets/Rutas3.txt");
+    cargarAeropuertos("datasets/Aeropuertos.txt");
+    cargarReservas("datasets/Reservas.txt");
+    cargarRutas("datasets/Rutas4.txt");
 
     desplegarMenu();
 
@@ -123,13 +126,16 @@ void cargarAerolineasRutas(string aerolineas, string origen, string destino, Red
         string asientos_texto = dato_aerolinea.substr(pos_separador + 1);
         int asientos = atoi(asientos_texto.c_str());
 
+        // Agrego la aerolinea a la red de viajes.
         redDeViajes.agregarAerolinea(aerolinea);
 
+        // Cargo el vuelo con las aerolineas que posibiitan el viaje y sus asientos totales.
         nuevoVuelo.agregarAerolinea(aerolinea, asientos);
 
         inicial = pos + 1;
     }
 
+    // Agrego el vuelo a la red de viajes.
     redDeViajes.agregarRuta(origen, destino, nuevoVuelo);
 }
 
@@ -247,11 +253,14 @@ void desplegarMenu()
          << "░▄█▄██▄█▄█▄█▄█▄██▀▀▒░░" << endl
          << "░▒▒▒▒░░▀▀████▄─░░░▒▒▒░" << endl
          << "▒▒▒▒▒▒▒▒▒▒▒▀▀██▄▒▒▒▒▒▒\n" << endl;
+
     char option;
     bool listadoGenerado = false;
     unsigned int origen, destino;
     double distancia = 0;
     vector<unsigned int> circuito;
+    string aerolinea;
+
     do
     {
         cout << CYAN << "Estas son las opciones disponibles en nuestro sistema:\n"
@@ -282,7 +291,7 @@ void desplegarMenu()
                 cout << RED << "No se hallaron aeropuertos en el sistema" << RESET << endl;
             break;
         case '2':
-            if (redDeViajes.retornarNumeroReservas() > 0)
+            if (redDeViajes.numeroReservas() > 0)
             {
                 generarListadoReservas("outputs/ListadoReservas.txt");
                 listadoGenerado = true;
@@ -291,9 +300,9 @@ void desplegarMenu()
                 cout << RED << "No se hallaron reservas en nuestro sistema." << RESET << endl;
             break;
         case '3':
-            solicitarDatos(origen, destino);
+            solicitarDatos(origen, destino, aerolinea);
             system("cls");
-            existeVueloDirecto(origen, destino);
+            existeVueloDirecto(origen, destino, aerolinea);
             break;
         case '4':
             solicitarDatos(origen, destino);
@@ -423,10 +432,11 @@ void generarListadoAeropuertos(string path)
     archivo << "Aeropuertos en nuestro sistema:\n"
             << endl;
 
+    // Obtengo una lista con los aeropuertos de la red aeroportuaria.
     list<RedAeroportuaria::Aeropuerto> aeropuertos;
-
     redDeViajes.listarAeropuertos(aeropuertos);
 
+    // Recorro la lista a medida que cargo los aeropuertos al archivo.
     for (const RedAeroportuaria::Aeropuerto &aeropuerto : aeropuertos)
     {
         archivo << "- " << (aeropuerto.verNombre()).c_str() << " (" << (aeropuerto.verCiudad()).c_str() << ", "
@@ -446,22 +456,20 @@ void generarListadoReservas(string path)
 
     archivo.open(path.c_str(), fstream::out);
 
+    // Se obtiene un listado con las reservas de la red aeroportuaria.
     list<RedAeroportuaria::Reserva> reservas;
-
     redDeViajes.listarReservas(reservas);
 
-    if (!reservas.empty())
-    {
-        archivo << "Reservas registradas en el sistema: \n"
-                << endl;
+    archivo << "Reservas registradas en el sistema: \n"
+            << endl;
 
-        for (const RedAeroportuaria::Reserva &reserva : reservas)
-        {
-            archivo << "- Vuelo de " << reserva.retornarOrigen() << " a " << reserva.retornarDestino()
-                    << ", a través de la aerolínea " << reserva.retornarAerolinea() << " con un total de "
-                    << reserva.retornarAsientosReservados() << "/" << reserva.retornarAsientosTotales()
-                    << " asientos reservados." << endl;
-        }
+    // Se realiza la carga de las reservas al archivo a medida que se recorre el listado.
+    for (const RedAeroportuaria::Reserva &reserva : reservas)
+    {
+        archivo << "- Vuelo de " << reserva.retornarOrigen() << " a " << reserva.retornarDestino()
+                << ", a través de la aerolínea " << reserva.retornarAerolinea() << " con un total de "
+                << reserva.retornarAsientosReservados() << "/" << reserva.retornarAsientosTotales()
+                << " asientos reservados." << endl;
     }
 
     archivo.close();
@@ -471,11 +479,8 @@ void generarListadoReservas(string path)
 //                                      Verificar si Existe un Vuelo Directo                                         //
 // ----------------------------------------------------------------------------------------------------------------- //
 
-void existeVueloDirecto(const unsigned int &origen, const unsigned int &destino)
+void existeVueloDirecto(const unsigned int &origen, const unsigned int &destino, const string &aerolinea)
 {
-    string aerolinea;
-    unsigned int asientosReservados;
-
     if (redDeViajes.existeVueloDirecto(origen, destino, aerolinea))
     {
         double distancia = redDeViajes.devolverDistancia(origen, destino);
@@ -502,6 +507,7 @@ void generarListadoVuelosMismaAerolinea(const unsigned int &origen, const unsign
 {
     map<string, list<pair<list<string>, double>>> vuelos;
 
+    // Obtengo los vuelos de un aeropuerto de origen a uno de destino a través de cada aerolínea.
     redDeViajes.vuelosMismaAerolinea(origen, destino, vuelos);
 
     ofstream archivo;
@@ -511,16 +517,18 @@ void generarListadoVuelosMismaAerolinea(const unsigned int &origen, const unsign
     archivo << "Vuelos del aeropuerto " << redDeViajes.nombreAeropuerto(origen) << " al aeropuerto " << redDeViajes.nombreAeropuerto(destino) << " a través de: \n"
             << endl;
 
-    for (const auto &vuelo : vuelos)
+    // Por cada aerolinea...
+    for (const auto &aerolinea : vuelos)
     {
         archivo << "-----------------------------------------------------------------------------------------\n"
                 << endl;
 
-        archivo << "Aerolínea " << vuelo.first << ": \n"
+        archivo << "Aerolínea " << aerolinea.first << ": \n"
                 << endl;
 
-        for (const auto &par : vuelo.second)
-            cargarCamino(par, destino, archivo);
+        // Por cada recorrido...
+        for (const auto &recorrido : aerolinea.second)
+            cargarCamino(recorrido, destino, archivo);
     }
 
     archivo.close();
@@ -528,18 +536,19 @@ void generarListadoVuelosMismaAerolinea(const unsigned int &origen, const unsign
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-void cargarCamino(const pair<list<string>, double> &par, const unsigned int &destino, ofstream &archivo)
+void cargarCamino(const pair<list<string>, double> &recorrido, const unsigned int &destino, ofstream &archivo)
 {
     unsigned int escalas = 0;
 
-    for (const string &aeropuerto : par.first)
+    // Se carga cada aeropuerto del recorrido en el archivo.
+    for (const string &aeropuerto : recorrido.first)
     {
         archivo << aeropuerto;
         if (aeropuerto != redDeViajes.nombreAeropuerto(destino))
             archivo << " -> ";
     }
 
-    escalas = par.first.size();
+    escalas = recorrido.first.size();
 
     if (escalas == 2)
         archivo << "\nVuelo directo. ";
@@ -548,7 +557,7 @@ void cargarCamino(const pair<list<string>, double> &par, const unsigned int &des
     else
         archivo << "\nVuelo con " << (escalas - 2) << " escalas. ";
 
-    archivo << "Distancia: " << par.second << " kilómetros."
+    archivo << "Distancia: " << recorrido.second << " kilómetros."
             << "\n"
             << endl;
 }
@@ -565,8 +574,9 @@ void generarArchivoCircuito(const vector<unsigned int> & circuito, const double 
 
     archivo << "Circuito de mínimo costo con origen en " << redDeViajes.nombreAeropuerto(circuito[0] - 1) << ": \n\n";
 
-    for (const auto &vertice : circuito)
-        archivo << redDeViajes.nombreAeropuerto(vertice - 1) << " -> ";
+    // Se realiza la carga de cada aeropuerto en el circuito en el archivo.
+    for (const auto &aeropuerto : circuito)
+        archivo << redDeViajes.nombreAeropuerto(aeropuerto - 1) << " -> ";
     archivo << redDeViajes.nombreAeropuerto(circuito[0] - 1) << endl;
 
     archivo << "\nDistancia a recorrer: " << distancia << " kilómetros" << endl;
@@ -655,9 +665,28 @@ void listarAerolineas()
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
+string nombreAerolinea(const int &index)
+{
+    int indice = 1;
+
+    list<string> aerolineas;
+    redDeViajes.listarAerolineas(aerolineas);
+
+    for (const auto &aerolinea : aerolineas)
+    {
+        if (indice == index)
+            return aerolinea;
+        indice++;
+    }
+
+    throw out_of_range("Ocurrió un error inesperado");
+}
+
+// ----------------------------------------------------------------------------------------------------------------- //
+
 string seleccionarAerolinea()
 {
-    int index, element = 1;
+    int index;
 
     do
     {
@@ -669,23 +698,14 @@ string seleccionarAerolinea()
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             cout << CYAN << "\nEntrada inválida. Lo ingresado no es un número. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
         }
-        else if (index <= 0 || index > redDeViajes.numeroAerolineas())
+        else if (index <= 0 || index > int(redDeViajes.numeroAerolineas()))
         {
             cout << CYAN << "\nEl número ingresado no le corresponde a ningún aerolínea. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
         }
 
-    } while (index <= 0 || index > redDeViajes.numeroAerolineas());
+    } while (index <= 0 || index > int(redDeViajes.numeroAerolineas()));
 
-    list<string> aerolineas;
-
-    redDeViajes.listarAerolineas(aerolineas);
-
-    for (const auto &aerolinea : aerolineas)
-    {
-        if (element == index)
-            return aerolinea;
-        element++;
-    }
+    return nombreAerolinea(index);
 }
 
 // ----------------------------------------------------------------------------------------------------------------- //
@@ -704,12 +724,12 @@ unsigned int seleccionarAeropuerto()
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             cout << CYAN << "\nEntrada inválida. Lo ingresado no es un número. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
         }
-        else if (index <= 0 || index > redDeViajes.numeroAeropuertos())
+        else if (index <= 0 || index > int(redDeViajes.numeroAeropuertos()))
         {
             cout << CYAN << "\nEl número ingresado no le corresponde a ningún aeropuerto. Por favor, revise la entrada y vuelva a intentarlo: " << RESET;
         }
 
-    } while (index <= 0 || index > redDeViajes.numeroAeropuertos());
+    } while (index <= 0 || index > int(redDeViajes.numeroAeropuertos()));
 
     return index - 1;
 }

@@ -1,0 +1,13 @@
+Reservas registradas en el sistema: 
+
+- Vuelo de Comodoro Benitez a El prat, a través de la aerolínea Delta con un total de 80/80 asientos reservados.
+- Vuelo de Pucon a Humberto Delgado, a través de la aerolínea Delta con un total de 10/80 asientos reservados.
+- Vuelo de Pucon a Humberto Delgado, a través de la aerolínea LATAM con un total de 120/120 asientos reservados.
+- Vuelo de John F. Kennedy a Ministro Pistarini, a través de la aerolínea Delta con un total de 152/152 asientos reservados.
+- Vuelo de John F. Kennedy a Ministro Pistarini, a través de la aerolínea United Airlines con un total de 20/96 asientos reservados.
+- Vuelo de Westchester a Logan, a través de la aerolínea United Airlines con un total de 126/126 asientos reservados.
+- Vuelo de Tancredo Neves a Logan, a través de la aerolínea United Airlines con un total de 18/186 asientos reservados.
+- Vuelo de Jorge Chavez a Pucon, a través de la aerolínea LATAM con un total de 100/100 asientos reservados.
+- Vuelo de El prat a Madrid-Barajas, a través de la aerolínea Avianca con un total de 40/124 asientos reservados.
+- Vuelo de Silvio Pettirosi a Armando Tola, a través de la aerolínea Aerolineas con un total de 15/154 asientos reservados.
+- Vuelo de Tocumen a Madrid-Barajas, a través de la aerolínea United Airlines con un total de 96/96 asientos reservados.
