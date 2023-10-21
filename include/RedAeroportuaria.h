@@ -124,7 +124,7 @@ public:
 
     unsigned int numeroReservas() const;
 
-    bool existeReserva(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino, const std::string & aerolinea) const;
+    bool existeReserva(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino, const std::string &aerolinea) const;
 
     unsigned int devolverAsientosReservados(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino, const std::string &aerolinea) const;
 

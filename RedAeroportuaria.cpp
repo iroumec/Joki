@@ -73,7 +73,7 @@ RedAeroportuaria::Vuelo::Vuelo() // O(1)
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-RedAeroportuaria::Vuelo& RedAeroportuaria::Vuelo::operator=(const Vuelo &otroVuelo)
+RedAeroportuaria::Vuelo &RedAeroportuaria::Vuelo::operator=(const Vuelo &otroVuelo)
 // O(k log k), siendo k el número de aerolíneas que posibilitan el viaje.
 {
     vuelos.clear(); // O(k)
@@ -128,10 +128,10 @@ bool RedAeroportuaria::Vuelo::esCabotaje() const // O(1)
 bool RedAeroportuaria::Vuelo::existeAerolinea(const std::string &aerolinea) const // O(log n)
 {
     // Busco la aerolínea de la que quiero obtener los asientos libres.
-    auto it = vuelos.find(aerolinea);
+    auto iteradorAerolinea = vuelos.find(aerolinea);
 
     // Retorno si logré obtener un iterador a ella.
-    return (it != vuelos.end());
+    return (iteradorAerolinea != vuelos.end());
 }
 
 // ----------------------------------------------------------------------------------------------------------------- //
@@ -270,29 +270,36 @@ void RedAeroportuaria::agregarRuta(const std::string &origen, const std::string 
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-void RedAeroportuaria::agregarReserva(const std::string &origen, const std::string &destino, const std::string &aerolinea, const unsigned int &asientosReservados)
+void RedAeroportuaria::agregarReserva(const std::string &origen, const std::string &destino,
+                                      const std::string &aerolinea, const unsigned int &asientosReservados)
+// O(log n + log m + log k), siendo n el número de aeropuertos de origen; siendo m el número de aeropuertos de destino;
+// y k, siendo el número de aerolíneas.
 {
-    auto it_origen = reservas.find(origen);
+    // Busco el aeropuerto de origen
+    auto iteradorAeropuertoOrigen = reservas.find(origen);
 
-    if (it_origen != reservas.end())
+    if (iteradorAeropuertoOrigen != reservas.end())
     {
-        auto it_destino = (it_origen->second).find(destino);
+        // Busco el aeropuerto de destino
+        auto iteradorAeropuertoDestino = (iteradorAeropuertoOrigen->second).find(destino);
 
-        if (it_destino != (it_origen->second).end())
+        if (iteradorAeropuertoDestino != (iteradorAeropuertoOrigen->second).end())
         {
-            auto it_aerolinea = (it_destino->second).find(aerolinea); // Busco la aerolínea
+            // Busco la aerolínea
+            auto iteradorAerolinea = (iteradorAeropuertoDestino->second).find(aerolinea); // Busco la aerolínea
 
-            if (it_aerolinea == (it_destino->second).end()) // Si no está la aerolínea aún
+            // De no existir la aerolínea, la agrego
+            if (iteradorAerolinea == (iteradorAeropuertoDestino->second).end()) // Si no está la aerolínea aún
             {
-                (it_destino->second).insert({aerolinea, asientosReservados});
+                (iteradorAeropuertoDestino->second).insert({aerolinea, asientosReservados});
             }
         }
-        else
+        else // De no existir el aaeropuerto de destino, lo agrego, junto a la aerolínea
         {
             std::map<std::string, unsigned int> nuevaAerolinea;
             nuevaAerolinea.insert({aerolinea, asientosReservados});
 
-            (it_origen->second).insert({destino, nuevaAerolinea});
+            (iteradorAeropuertoOrigen->second).insert({destino, nuevaAerolinea});
         }
     }
     else // Si no está el aeropuerto de origen
@@ -318,7 +325,7 @@ void RedAeroportuaria::agregarAerolinea(const std::string &nuevaAerolinea) // O(
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-bool RedAeroportuaria::estaVacia() const
+bool RedAeroportuaria::estaVacia() const // O(1)
 {
     return (redAeroportuaria.devolverLongitud() == 0);
 }
@@ -326,6 +333,7 @@ bool RedAeroportuaria::estaVacia() const
 // ----------------------------------------------------------------------------------------------------------------- //
 
 bool RedAeroportuaria::existeAeropuerto(const unsigned int &aeropuerto) const
+// O(log V), siendo V el número de vértices
 {
     return redAeroportuaria.existeVertice(aeropuerto);
 }
@@ -335,6 +343,7 @@ bool RedAeroportuaria::existeAeropuerto(const unsigned int &aeropuerto) const
 // ----------------------------------------------------------------------------------------------------------------- //
 
 void RedAeroportuaria::listarAeropuertos(std::list<Aeropuerto> &listaAeropuertos)
+// O(n), siendo n el número de aeropuertos
 {
     for (const Aeropuerto &aeropuerto : aeropuertos)
         listaAeropuertos.push_back(aeropuerto);
@@ -342,7 +351,7 @@ void RedAeroportuaria::listarAeropuertos(std::list<Aeropuerto> &listaAeropuertos
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-unsigned int RedAeroportuaria::numeroAeropuertos() const
+unsigned int RedAeroportuaria::numeroAeropuertos() const // O(1)
 {
     return aeropuertos.size();
 }
@@ -350,6 +359,7 @@ unsigned int RedAeroportuaria::numeroAeropuertos() const
 // ----------------------------------------------------------------------------------------------------------------- //
 
 void RedAeroportuaria::listarAerolineas(std::list<std::string> &listaAerolineas)
+// O(k), siendo k el número de aerolíneas en el conjunto
 {
     for (const auto &aerolinea : aerolineas)
         listaAerolineas.push_back(aerolinea);
@@ -357,7 +367,7 @@ void RedAeroportuaria::listarAerolineas(std::list<std::string> &listaAerolineas)
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
-unsigned int RedAeroportuaria::numeroAerolineas() const
+unsigned int RedAeroportuaria::numeroAerolineas() const // O(1)
 {
     return aerolineas.size();
 }
@@ -367,6 +377,8 @@ unsigned int RedAeroportuaria::numeroAerolineas() const
 // ----------------------------------------------------------------------------------------------------------------- //
 
 void RedAeroportuaria::listarReservas(std::list<Reserva> &listaReservas)
+// O(n * m * k), siendo n el número de aeropuertos; siendo m el número de adyacentes del aeropuerto;
+// y k, siendo k el número de aerolíneas que posibilitan el viaje entre el aeropuerto y el adyacente.
 {
     Vuelo vuelo;
     std::list<Grafo<Vuelo>::Arco> arcos;
@@ -374,21 +386,25 @@ void RedAeroportuaria::listarReservas(std::list<Reserva> &listaReservas)
     unsigned int aeropuerto, asientosReservados;
     std::string aeropuertoOrigen, aeropuertoDestino;
 
+    // Itero por cada aeropuerto
     for (aeropuerto = 0; aeropuerto < numeroAeropuertos(); aeropuerto++)
     {
-        // Busco los aeropuertos destinos a partir del origen.
+        // Obtengo los aeropuertos adyacentes al aeropuerto de origen.
         redAeroportuaria.devolverAdyacentes(aeropuerto, arcos);
 
         aeropuertoOrigen = aeropuertos[aeropuerto].verNombre();
 
+        // Itero sobre los adyacentes
         for (const auto &arco : arcos)
         {
             vuelo = arco.devolverCosto();
 
+            // Obtengo las aerolíneas que posibilitan el viaje entre el aeropuerto de origen y el aeropuerto de destino
             vuelo.verAerolineas(aerolineas);
 
             aeropuertoDestino = nombreAeropuerto(arco.devolverAdyacente());
 
+            // Itero sobre las aerolíneas
             for (std::string aerolinea : aerolineas)
             {
                 if (existeReserva(aeropuerto, arco.devolverAdyacente(), aerolinea))
@@ -404,11 +420,11 @@ void RedAeroportuaria::listarReservas(std::list<Reserva> &listaReservas)
                 }
             }
 
-            // Vacío la lista de aerolíneas para darle paso a la próxima iteración.
+            // Vacío la lista de aerolíneas para darle paso a la próxima iteración
             aerolineas.clear();
         }
 
-        // Vacío la lista de arcos para dar paso a la siguiente iteración.
+        // Vacío la lista de arcos para dar paso a la siguiente iteración
         arcos.clear();
     }
 }
@@ -416,18 +432,23 @@ void RedAeroportuaria::listarReservas(std::list<Reserva> &listaReservas)
 // ----------------------------------------------------------------------------------------------------------------- //
 
 bool RedAeroportuaria::existeReserva(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino,
-                                     const std::string & aerolinea) const
+                                     const std::string &aerolinea) const
+// O(log n + log m + log k), siendo n el número de aeropuertos de origen; siendo m el número
+// de aeropuertos de destino; y k, siendo el número de aerolíneas.
 {
     bool reservaHallada = false;
 
+    // Busco el aeropuerto de origen
     auto iteradorAeropuertoOrigen = reservas.find(nombreAeropuerto(aeropuertoOrigen));
 
     if (iteradorAeropuertoOrigen != reservas.end())
     {
+        // Busco el aeropuerto de destino
         auto iteradorAeropuertoDestino = (iteradorAeropuertoOrigen->second).find(nombreAeropuerto(aeropuertoDestino));
 
         if (iteradorAeropuertoDestino != (iteradorAeropuertoOrigen->second).end())
         {
+            // Busco el aeropuerto de aerolínea
             auto iteradorAerolinea = (iteradorAeropuertoDestino->second).find(aerolinea);
 
             if (iteradorAerolinea != (iteradorAeropuertoDestino->second).end())
@@ -474,7 +495,8 @@ bool RedAeroportuaria::existeVueloDirecto(const unsigned int &aeropuertoOrigen, 
 
 unsigned int RedAeroportuaria::devolverAsientosReservados(const unsigned int &aeropuertoOrigen,
                                                           const unsigned int &aeropuertoDestino, const std::string &aerolinea) const
-// O(log n, log k), siendo n el número de aeropuertos y k, el número de aerolíneas
+// O(log n + log m + log k), siendo n el número de aeropuertos; m, el número de aeropuertos adyacentes al de origen;
+// y k, el número de aerolíneas
 {
     unsigned int asientosReservados;
     std::string nombreAeropuertoOrigen, nombreAeropuertoDestino;
@@ -482,19 +504,22 @@ unsigned int RedAeroportuaria::devolverAsientosReservados(const unsigned int &ae
     nombreAeropuertoOrigen = aeropuertos[aeropuertoOrigen].verNombre();
     nombreAeropuertoDestino = aeropuertos[aeropuertoDestino].verNombre();
 
-    auto it_origen = reservas.find(nombreAeropuertoOrigen);
+    // Busco el aeropuerto de origen
+    auto iteradorAeropuertoOrigen = reservas.find(nombreAeropuertoOrigen);
 
-    if (it_origen != reservas.end())
+    if (iteradorAeropuertoOrigen != reservas.end())
     {
-        auto it_destino = (it_origen->second).find(nombreAeropuertoDestino);
+        // Busco el aeropuerto de destino
+        auto iteradorAeropuertoDestino = (iteradorAeropuertoOrigen->second).find(nombreAeropuertoDestino);
 
-        if (it_destino != (it_origen->second).end())
+        if (iteradorAeropuertoDestino != (iteradorAeropuertoOrigen->second).end())
         {
-            auto it_aerolinea = (it_destino->second).find(aerolinea);
+            // Busco la aerolínea
+            auto iteradorAerolinea = (iteradorAeropuertoDestino->second).find(aerolinea);
 
-            if (it_aerolinea != (it_destino->second).end())
+            if (iteradorAerolinea != (iteradorAeropuertoDestino->second).end())
             {
-                asientosReservados = (it_aerolinea->second);
+                asientosReservados = (iteradorAerolinea->second);
             }
             else
             {
@@ -514,10 +539,12 @@ unsigned int RedAeroportuaria::devolverAsientosReservados(const unsigned int &ae
     return asientosReservados;
 }
 
-// -------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 unsigned int RedAeroportuaria::devolverAsientosDisponibles(const unsigned int &aeropuertoOrigen,
                                                            const unsigned int &aeropuertoDestino, const std::string &aerolinea) const
+// O(max{log n + log m + log k, k log k}), siendo n el número de aeropuertos; m, el número de aeropuertos adyacentes al de origen;
+// y k, el número de aerolíneas
 {
     unsigned int asientosDisponibles, asientosTotales, asientosReservados;
 
@@ -526,11 +553,11 @@ unsigned int RedAeroportuaria::devolverAsientosDisponibles(const unsigned int &a
     if (redAeroportuaria.existeArco(aeropuertoOrigen, aeropuertoDestino)) // O(log n), siendo n el número de vértices.
     {
         Vuelo vuelo = redAeroportuaria.costoArco(aeropuertoOrigen, aeropuertoDestino); // O(k log k), siendo k el número de aerolíneas que posibilitan el viaje.
-        asientosTotales = vuelo.verAsientosTotales(aerolinea); // O(1)
+        asientosTotales = vuelo.verAsientosTotales(aerolinea);                         // O(1)
 
-        if (existeReserva(aeropuertoOrigen, aeropuertoDestino, aerolinea))
+        if (existeReserva(aeropuertoOrigen, aeropuertoDestino, aerolinea)) // O(log n + log m + log k)
         {
-            asientosReservados = devolverAsientosReservados(aeropuertoOrigen, aeropuertoDestino, aerolinea);
+            asientosReservados = devolverAsientosReservados(aeropuertoOrigen, aeropuertoDestino, aerolinea); // O(log n + log m + log k)
         }
         else
             asientosReservados = 0;
@@ -542,17 +569,18 @@ unsigned int RedAeroportuaria::devolverAsientosDisponibles(const unsigned int &a
     return asientosDisponibles;
 }
 
-// -------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 double RedAeroportuaria::devolverDistancia(const unsigned int &aeropuertoOrigen, const unsigned int &aeropuertoDestino) const
+// O(log n + log m), siendo n el número de vértices; y m, el número de adyacentes del vértice de origen.
 {
     unsigned int distancia;
 
-    if (redAeroportuaria.existeArco(aeropuertoOrigen, aeropuertoDestino))
+    if (redAeroportuaria.existeArco(aeropuertoOrigen, aeropuertoDestino)) // O(log n + log m)
     {
-        Vuelo vuelo = redAeroportuaria.costoArco(aeropuertoOrigen, aeropuertoDestino);
+        Vuelo vuelo = redAeroportuaria.costoArco(aeropuertoOrigen, aeropuertoDestino); // O(log n + log m)
 
-        distancia = vuelo.verDistancia();
+        distancia = vuelo.verDistancia(); // O(1)
     }
     else
         throw std::invalid_argument("No existe un arco entre el vértice de origen y el de destino");
@@ -560,11 +588,14 @@ double RedAeroportuaria::devolverDistancia(const unsigned int &aeropuertoOrigen,
     return distancia;
 }
 
-// -------------------------------------------------------------------------------------------------- //
-//                   Vuelos desde un Origen a un Destino sin cambiar de Aerolínea                     //
-// -------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
+//                          Vuelos desde un Origen a un Destino sin cambiar de Aerolínea                             //
+// ----------------------------------------------------------------------------------------------------------------- //
 
-void RedAeroportuaria::vuelosMismaAerolinea(const unsigned int &origen, const unsigned int &destino, std::map<std::string, std::list<std::pair<std::list<std::string>, double>>> &vuelos)
+void RedAeroportuaria::vuelosMismaAerolinea(const unsigned int &origen, const unsigned int &destino,
+                                            std::map<std::string, std::list<std::pair<std::list<std::string>, double>>> &vuelos)
+// O(k(n + m)(log n + log m + log k)), siendo en el número de aeropuertos; m, el número de adyacentes a los aeropuertos;
+// y k, el número de aerolíneas.
 {
     double distancia = 0;
     std::vector<bool> visitado(aeropuertos.size(), false);
@@ -575,17 +606,19 @@ void RedAeroportuaria::vuelosMismaAerolinea(const unsigned int &origen, const un
         std::pair<std::list<std::string>, double> camino;
         std::list<std::pair<std::list<std::string>, double>> listadoCaminos;
 
-        buscarCaminos(origen, destino, aerolinea, distancia, visitado, camino, listadoCaminos);
+        buscarCaminos(origen, destino, aerolinea, distancia, visitado, camino, listadoCaminos); // O((n + m) (log n + log m + log k))
 
         vuelos.insert({aerolinea, listadoCaminos});
     }
 }
 
-// -------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 void RedAeroportuaria::buscarCaminos(const unsigned int &origen, const unsigned int &destino,
                                      const std::string &aerolinea, double &distancia,
                                      std::vector<bool> &visitado, std::pair<std::list<std::string>, double> &camino, std::list<std::pair<std::list<std::string>, double>> &listadoCaminos)
+// O((n + m) (log n + log m + log k)), siendo n el número de aeropuertos; m, el número de adyacentes a los aeropuertos; y k,
+// el número de aerolíneas
 {
     Vuelo vuelo;
     unsigned int asientosReservados;
@@ -601,21 +634,21 @@ void RedAeroportuaria::buscarCaminos(const unsigned int &origen, const unsigned 
     else
     {
         std::list<Grafo<Vuelo>::Arco> arcos;
-        redAeroportuaria.devolverAdyacentes(origen, arcos);
+        redAeroportuaria.devolverAdyacentes(origen, arcos); // O(max{log n, m})
 
-        for (const auto &arco : arcos)
+        for (const auto &arco : arcos) // O(m(log n + log m + log k))
         {
-            vuelo = arco.devolverCosto();
+            vuelo = arco.devolverCosto(); // O(1)
 
-            if (existeReserva(origen, destino, aerolinea))
+            if (existeReserva(origen, destino, aerolinea)) // O(log n + log m + log k)
             {
-                asientosReservados = devolverAsientosReservados(origen, destino, aerolinea);
+                asientosReservados = devolverAsientosReservados(origen, destino, aerolinea); // O(log n + log m + log k)
             }
             else
                 asientosReservados = 0;
 
-            if (!(visitado[arco.devolverAdyacente()]))
-                if ((vuelo.verAsientosTotales(aerolinea) - asientosReservados) > 0)
+            if (!(visitado[arco.devolverAdyacente()]))                              // O(1)
+                if ((vuelo.verAsientosTotales(aerolinea) - asientosReservados) > 0) // O(1)
                 {
                     distancia += vuelo.verDistancia();
                     buscarCaminos(arco.devolverAdyacente(), destino, aerolinea, distancia, visitado, camino, listadoCaminos);
@@ -627,17 +660,18 @@ void RedAeroportuaria::buscarCaminos(const unsigned int &origen, const unsigned 
     visitado[origen] = false;
 }
 
-// -------------------------------------------------------------------------------------------------- //
-//                                  Circuito Mínimo de Aeropuertos                                    //
-// -------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
+//                                         Circuito Mínimo de Aeropuertos                                            //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 void RedAeroportuaria::obtenerCircuitoMinimo(const unsigned int &origen, std::vector<unsigned int> &circuito, double &distancia)
+// O(n^n), siendo n el número de aeropuertos en la red Aeroporturia. Esto debido a que invoca a "calcularCircuitoMinimo".
 {
     unsigned int indice = 0;
     double costoActual = 0, costoMinimo = INF;
     std::vector<unsigned int> circuitoActual(redAeroportuaria.devolverLongitud(), 0), circuitoMinimo(redAeroportuaria.devolverLongitud(), 0);
 
-    calcularCircuitoMinimo(origen, indice, circuitoActual, circuitoMinimo, costoActual, costoMinimo);
+    calcularCircuitoMinimo(origen, indice, circuitoActual, circuitoMinimo, costoActual, costoMinimo); // O(n^n)
 
     if (costoMinimo != INF)
     {
@@ -649,17 +683,20 @@ void RedAeroportuaria::obtenerCircuitoMinimo(const unsigned int &origen, std::ve
     circuitoMinimo.clear();
 }
 
-// -------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
-void RedAeroportuaria::calcularCircuitoMinimo(const unsigned int &verticeInicio, const unsigned int &indice, std::vector<unsigned int> &circuito, std::vector<unsigned int> &circuitoMinimo, double &costoActual, double &costoMinimo)
+void RedAeroportuaria::calcularCircuitoMinimo(const unsigned int &verticeInicio, const unsigned int &indice,
+                                              std::vector<unsigned int> &circuito, std::vector<unsigned int> &circuitoMinimo,
+                                              double &costoActual, double &costoMinimo)
+// O(n^n), siendo n el número de aeropuertos en la red Aeroportuaria
 {
     circuito[indice] = verticeInicio + 1;
 
-    if (indice == redAeroportuaria.devolverLongitud() - 1) // Me paasé de la última posición del circuito
+    if (indice == redAeroportuaria.devolverLongitud() - 1) // Me pasé de la última posición del circuito
     {
-        if (redAeroportuaria.existeArco(verticeInicio, circuito[0] - 1))
+        if (redAeroportuaria.existeArco(verticeInicio, circuito[0] - 1)) // O(log n + log m)
         {
-            Vuelo vuelo = redAeroportuaria.costoArco(verticeInicio, circuito[0] - 1);
+            Vuelo vuelo = redAeroportuaria.costoArco(verticeInicio, circuito[0] - 1); // O(log n + log m)
             costoActual += vuelo.verDistancia();
             if (costoActual < costoMinimo) // Condición de corte
             {
@@ -672,14 +709,14 @@ void RedAeroportuaria::calcularCircuitoMinimo(const unsigned int &verticeInicio,
     else
     {
         std::list<Grafo<Vuelo>::Arco> adyacentesVerticeInicio;
-        redAeroportuaria.devolverAdyacentes(verticeInicio, adyacentesVerticeInicio);
+        redAeroportuaria.devolverAdyacentes(verticeInicio, adyacentesVerticeInicio); // O(m), siendo m la cantidad de adyacentes del vértice de origen
 
-        for (const auto &arco : adyacentesVerticeInicio)
+        for (const auto &arco : adyacentesVerticeInicio) // O(m)
         {
-            if (!perteneceCircuito(arco.devolverAdyacente(), indice + 1, circuito))
+            if (!perteneceCircuito(arco.devolverAdyacente(), indice + 1, circuito)) // O(I)
             {
-                Vuelo vuelo = arco.devolverCosto();
-                if (costoActual + vuelo.verDistancia() < costoMinimo)
+                Vuelo vuelo = arco.devolverCosto();                   // O(1)
+                if (costoActual + vuelo.verDistancia() < costoMinimo) // O(1)
                 {
                     costoActual += vuelo.verDistancia();
                     calcularCircuitoMinimo(arco.devolverAdyacente(), (indice + 1), circuito, circuitoMinimo, costoActual, costoMinimo);
@@ -692,9 +729,10 @@ void RedAeroportuaria::calcularCircuitoMinimo(const unsigned int &verticeInicio,
     circuito[indice] = 0;
 }
 
-// -------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------------------------------------- //
 
 bool RedAeroportuaria::perteneceCircuito(const unsigned int &verticeActual, const unsigned int &indice, const std::vector<unsigned int> &circuito)
+// O(I), siendo I el número de índice
 {
     unsigned int i = 0;
     bool elementoEncontrado = false;
