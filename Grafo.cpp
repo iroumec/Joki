@@ -8,7 +8,6 @@
 template <typename C>
 Grafo<C>::Arco::Arco()
 // Complejidad temporal: O(1).
-// Complejidad espacial: O(1).
 {
 }
 
@@ -17,7 +16,6 @@ Grafo<C>::Arco::Arco()
 template <typename C>
 Grafo<C>::Arco::Arco(const int &adyacente, const C &costo)
 // Complejidad temporal: O(C), siendo C la complejidad temporal del operador = del costo del arco.
-// Complejidad espacial: O(T), siendo T el costo espacial de almacenar un dato de tipo C.
 {
     vertice = adyacente;
 
@@ -29,7 +27,6 @@ Grafo<C>::Arco::Arco(const int &adyacente, const C &costo)
 template <typename C>
 int Grafo<C>::Arco::devolverAdyacente() const
 // Complejidad temporal: O(1).
-// Complejidad espacial: O(1).
 {
     return vertice;
 }
@@ -39,7 +36,6 @@ int Grafo<C>::Arco::devolverAdyacente() const
 template <typename C>
 void Grafo<C>::Arco::nuevoCosto(const C &costo)
 // Complejidad temporal: O(C), siendo C la complejidad temporal del operador = del costo del arco.
-// Complejidad espacial: O(T), siendo T el costo espacial de almacenar un dato de tipo C.
 {
     this->costo = costo;
 }
@@ -49,7 +45,6 @@ void Grafo<C>::Arco::nuevoCosto(const C &costo)
 template <typename C>
 const C &Grafo<C>::Arco::devolverCosto() const
 // Complejidad temporal: O(1).
-// Complejidad espacial: O(1).
 {
     return costo;
 }
@@ -61,7 +56,6 @@ const C &Grafo<C>::Arco::devolverCosto() const
 template <typename C>
 Grafo<C>::Grafo()
 // Complejidad temporal: O(1).
-// Complejidad espacial: O(1).
 {
 }
 
@@ -69,10 +63,8 @@ Grafo<C>::Grafo()
 
 template <typename C>
 Grafo<C>::Grafo(const Grafo &otroGrafo)
-// Complejidad temporal: O(n * m * log n), siendo n el número de vértice del grafo otroGrafo y m, el número promedio
+// Complejidad temporal: O(n^2 * log n), siendo n el número de vértice del grafo otroGrafo y m, el número promedio
 // de adyacentes por vértice. Esto debido a que utiliza el operador =.
-// Complejidad temporal: O(n * m * T), donde n es el número de vértices del grafo; m, el número promedio de arcos por
-// vértice; y T, el costo espacial de almacenar un dato de tipo C.
 {
     *this = otroGrafo;
 }
@@ -81,21 +73,18 @@ Grafo<C>::Grafo(const Grafo &otroGrafo)
 
 template <typename C>
 Grafo<C>::~Grafo()
-// Complejidad temporal: O(n + m * C), donde n es el número de vértices; m, el número de arcos; y C, la complejidad
-// temporal del destructor de la estructura del costo del arco. Esto debido a que invoca al método ".vaciar()".
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(n^2 * C), donde n es el número de vértices y C, la complejidad temporal del destructor
+// de la estructura del costo del arco. Esto debido a que invoca al método ".vaciar()".
 {
-    grafo.vaciar();
+    vaciar();
 }
 
 // ----------------------------------------------------------------------------------------------------------------- //
 
 template <typename C>
 Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo)
-// Complejidad temporal: O(n * m * log n), donde n es el número de vértices en el grafo y m, el número promedio
-// de adyacentes por vértice.
-// Complejidad espacial: O(n * m), donde n es la cantidad de vértices del grafo otroGrafo y m, la cantidad promedio
-// de adyacentes por vértice.
+// Complejidad temporal: O(n^2 * log n), donde n es el número de vértices en el grafo.
+// En el peor de los casos, el número de adyacentes de un vértice será tan grande como el número de vértices.
 {
     grafo.clear();
 
@@ -108,7 +97,7 @@ Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo)
     {
         agregarVertice(vertice); // O(log n)
 
-        otroGrafo.devolverAdyacentes(vertice, arcos); // O(m)
+        otroGrafo.devolverAdyacentes(vertice, arcos); // O(m), siendo m la cantidad de adyacentes al vértice.
 
         for (const auto &arco : arcos)                                               // O(m)
             grafo[vertice].insert({arco.devolverAdyacente(), arco.devolverCosto()}); // O(log n)
@@ -124,7 +113,6 @@ Grafo<C> &Grafo<C>::operator=(const Grafo &otroGrafo)
 template <typename C>
 bool Grafo<C>::estaVacio() const
 // Complejidad temporal: O(1).
-// Complejidad espacial: O(1).
 {
     return grafo.empty();
 }
@@ -134,7 +122,6 @@ bool Grafo<C>::estaVacio() const
 template <typename C>
 int Grafo<C>::devolverLongitud() const
 // Complejidad temporal: O(1).
-// Complejidad espacial: O(1).
 {
     return grafo.size();
 }
@@ -144,9 +131,8 @@ int Grafo<C>::devolverLongitud() const
 template <typename C>
 bool Grafo<C>::existeVertice(const int &vertice) const
 // Complejidad temporal: O(log n), siendo n el número de vértices en el grafo.
-// Complejidad espacial: O(1).
 {
-    auto iteradorVertice = grafo.find(vertice);
+    auto iteradorVertice = grafo.find(vertice); // O(log n)
 
     return (iteradorVertice != grafo.end());
 }
@@ -155,9 +141,8 @@ bool Grafo<C>::existeVertice(const int &vertice) const
 
 template <typename C>
 bool Grafo<C>::existeArco(const int &origen, const int &destino) const
-// Complejidad temporal: O(log n + log m), siendo n el número de vértices y m, el número de vértices adyacentes al
-// vértice de origen.
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(log n), siendo n el número de vértices.
+// En el peor de los casos, el número de adyacentes de un vértice será tan grande como el número de vértices.
 {
     bool hallado = false;
 
@@ -168,6 +153,7 @@ bool Grafo<C>::existeArco(const int &origen, const int &destino) const
     {
         // Busco el vértice de destino dentro de los adyacentes al de origen
         auto iteradorVerticeDestino = (iteradorVerticeOrigen->second).find(destino);
+        // O(log m), siendo m el número de adyacentes al vértice de origen.
 
         if (iteradorVerticeDestino != (iteradorVerticeOrigen->second).end())
             hallado = true;
@@ -180,17 +166,18 @@ bool Grafo<C>::existeArco(const int &origen, const int &destino) const
 
 template <typename C>
 const C &Grafo<C>::costoArco(const int &origen, const int &destino) const
-// Complejidad temporal: O(log n + log m), siendo n el número de vértices; y m, el número de adyacentes al vértice de origen.
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(log n), siendo n el número de vértices; y m, el número de adyacentes al vértice de origen.
+// En el peor de los casos, el número de adyacentes de un vértice será tan grande como el número de vértices.
 {
     // Busco el vértice de origen
-    auto iteradorVerticeOrigen = grafo.find(origen);
+    auto iteradorVerticeOrigen = grafo.find(origen); // O(log n)
 
     if (iteradorVerticeOrigen == grafo.end())
         throw std::invalid_argument("No existe el vértice de origen");
 
     // Busco el vértice destino dentro de los adyacentes al de origen
     auto iteradorVerticeDestino = (iteradorVerticeOrigen->second).find(destino);
+    // O(log m), siendo m el número de adyacentes al vértice de origen.
 
     if (iteradorVerticeDestino == (iteradorVerticeOrigen->second).end())
         throw std::invalid_argument("No existe un arco entre el vértice de origen y el de destino");
@@ -203,7 +190,6 @@ const C &Grafo<C>::costoArco(const int &origen, const int &destino) const
 template <typename C>
 void Grafo<C>::devolverVertices(std::list<int> &vertices) const
 // Complejidad temporal: O(n), siendo n el número de vértices en el grafo.
-// Complejidad espacial: O(1).
 {
     for (const auto &vertice : grafo)
         vertices.push_back(vertice.first);
@@ -213,14 +199,15 @@ void Grafo<C>::devolverVertices(std::list<int> &vertices) const
 
 template <typename C>
 void Grafo<C>::devolverAdyacentes(const int &origen, std::list<Arco> &adyacentes) const
-// Complejidad temporal: O(log n + m), siendo n el número de vértices y m, la cantidad de adyacentes del vértice origen.
-// Complejidad espacial: O(1). No consideramos a lista a devolver como parte de la complejidad espacial.
+// Complejidad temporal: O(n), siendo n el número de vértices.
+// En el peor de los casos, el número de adyacentes de un vértice será tan grande como el número de vértices.
 {
     auto iteradorAeropuertoOrigen = grafo.find(origen); // O(log n)
 
     if (iteradorAeropuertoOrigen != grafo.end())
     {
-        for (const auto &adyacente : (iteradorAeropuertoOrigen->second)) // O(m)
+        for (const auto &adyacente : (iteradorAeropuertoOrigen->second))
+        // O(m), siendo m la cantidad de adyacentes al vértice de origen.
         {
             Arco nuevo_arco(adyacente.first, adyacente.second);
             adyacentes.push_back(nuevo_arco);
@@ -233,7 +220,6 @@ void Grafo<C>::devolverAdyacentes(const int &origen, std::list<Arco> &adyacentes
 template <typename C>
 void Grafo<C>::agregarVertice(const int &vertice)
 // Complejidad temporal: O(log n), siendo n el número de vértices del grafo.
-// Complejidad espacial: O(1).
 {
     std::map<int, C> arcos;
 
@@ -244,15 +230,14 @@ void Grafo<C>::agregarVertice(const int &vertice)
 
 template <typename C>
 void Grafo<C>::eliminarVertice(const int &verticeAEliminar)
-// Complejidad temporal: O(n log n + n log m), siendo n el número de vértices y m, el número de adyacentes promedio
-// al vértice de origen.
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(n log n), siendo n el número de vértices.
+// En el peor de los casos, el número de adyacentes de un vértice será tan grande como el número de vértices.
 {
     // Elimino los arcos que haya de otros vértices al que quiero eliminar.
     for (const auto &vertice : grafo) // O(n)
     {
         if (vertice.first != verticeAEliminar)
-            eliminarArco(vertice.first, verticeAEliminar); // O(log n + log m)
+            eliminarArco(vertice.first, verticeAEliminar); // O(log n)
     }
 
     grafo.erase(verticeAEliminar); // O(log n)
@@ -262,14 +247,16 @@ void Grafo<C>::eliminarVertice(const int &verticeAEliminar)
 
 template <typename C>
 void Grafo<C>::modificarCostoArco(const int &origen, const int &destino, const C &costo)
-// Complejidad temporal: O(log n + log m), siendo n el número de vértices
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(max{log n, C}), siendo n el número de vértices del grafo y C, el costo del operador igual
+// de la estructura que se almacene como costo en el grafo.
+// En el peor de los casos, el número de adyacentes de un vértice será tan grande como el número de vértices.
 {
-    auto iteradorAeropuertoOrigen = grafo.find(origen);
+    auto iteradorAeropuertoOrigen = grafo.find(origen); // O(log n)
 
     if (iteradorAeropuertoOrigen != grafo.end())
     {
         auto iteradorAeropuertoDestino = (iteradorAeropuertoOrigen->second).find(destino);
+        // O(log m), siendo m el número de adyacentes al aeropuerto de origen.
 
         if (iteradorAeropuertoDestino != (iteradorAeropuertoOrigen->second).end())
             (iteradorAeropuertoDestino->second) = costo;
@@ -280,9 +267,8 @@ void Grafo<C>::modificarCostoArco(const int &origen, const int &destino, const C
 
 template <typename C>
 void Grafo<C>::agregarArco(const int &origen, const int &destino, const C &costo)
-// Complejidad temporal: O(log n + log m), siendo n el número de vértices del grafo y m, el número de vértices
-// adyacentes al vértice de origen.
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(log n), siendo n el número de vértices del grafo. En el peor de los casos, el número
+// de adyacentes de un vértice será tan grande como el número de vértices.
 {
     grafo[origen].insert({destino, costo});
 }
@@ -291,18 +277,18 @@ void Grafo<C>::agregarArco(const int &origen, const int &destino, const C &costo
 
 template <typename C>
 void Grafo<C>::eliminarArco(const int &origen, const int &destino)
-// Complejidad temporal: O(log n + log m), siendo n el número de vértices del grafo y m, el número de adyacentes al
-// vértice de origen.
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(log n), siendo n el número de vértices del grafo. En el peor de los casos, el número
+// de adyacentes de un vértice será tan grande como el número de vértices.
 {
     auto iteradorVerticeOrigen = grafo.find(origen); // O(log n)
 
     if (iteradorVerticeOrigen != grafo.end())
     {
-        auto iteradorVerticeDestino = (iteradorVerticeOrigen->second).find(destino); // O(log m)
+        auto iteradorVerticeDestino = (iteradorVerticeOrigen->second).find(destino);
+        // O(log m), siendo m el número de adyacentes a origen
 
         if (iteradorVerticeDestino != (iteradorVerticeOrigen->second).end())
-            (iteradorVerticeOrigen->second).erase(iteradorVerticeDestino); // O(log m)
+            (iteradorVerticeOrigen->second).erase(iteradorVerticeDestino);
     }
 }
 
@@ -310,12 +296,12 @@ void Grafo<C>::eliminarArco(const int &origen, const int &destino)
 
 template <typename C>
 void Grafo<C>::vaciar()
-// Complejidad temporal: O(n + m * C), donde n es el número de vértices; m, el número de arcos; y C, la complejidad
-// temporal del destructor de la estructura del costo del arco.
-// Complejidad espacial: O(1).
+// Complejidad temporal: O(n^2 * C), donde n es el número de vértices; y C, la complejidad temporal del destructor
+// de la estructura del costo del arco. Esto debido a que, en el peor de los casos, se tendrán tantos adyacentes como
+// vértices.
 {
-    for (auto &arco : grafo) // O(m)
-        arco.second.clear();
+    for (auto &arco : grafo) // O(n), itera sobre cada vértice
+        arco.second.clear(); // O(n), ya que en el peor de los casos un vértice tendrá n-1 adyacentes
 
     grafo.clear(); // O(n)
 }

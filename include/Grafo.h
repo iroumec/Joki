@@ -34,37 +34,31 @@ public:
 
 	~Grafo();
 
-	Grafo &operator=(const Grafo &otroGrafo); // Operador =.
+	Grafo &operator=(const Grafo &otroGrafo);
 
-	bool estaVacio() const; // Consultar si el grafo está vacío.
+	bool estaVacio() const;
 
-	int devolverLongitud() const; // Consultar por la cantidad de vértices del grafo.
+	int devolverLongitud() const;
 
-	bool existeVertice(const int &vertice) const; // Consultar si existe un vértice en el grafo.
+    void agregarVertice(const int &vertice);
 
-	bool existeArco(const int &origen, const int &destino) const; // Consultar si existe un arco entre dos vértices.
+	void eliminarVertice(const int &vertice);
 
-	// PRE CONDICION: existeArco(origen, destino)
-	const C &costoArco(const int &origen, const int &destino) const; // Consultar por el costo del arco entre dos vértices.
+	bool existeVertice(const int &vertice) const;
 
-	void devolverVertices(std::list<int> &vertices) const;
+    void devolverVertices(std::list<int> &vertices) const;
+
+    void eliminarArco(const int &origen, const int &destino);
+
+	bool existeArco(const int &origen, const int &destino) const;
+
+	const C &costoArco(const int &origen, const int &destino) const;
+
+    void agregarArco(const int &origen, const int &destino, const C &costo);
 
 	void devolverAdyacentes(const int &origen, std::list<Arco> &adyacentes) const;
 
-	void agregarVertice(const int &vertice);
-
-	// POST CONDICION: Para todo vértice v != vertice: !existeArco(v, vertice) && !existeArco(vertice, v)
-	void eliminarVertice(const int &vertice);
-
-	// PRE CONDICION: existeArco(origen, destino)
 	void modificarCostoArco(const int &origen, const int &destino, const C &costo);
-
-	// PRE CONDICION: existeVertice(origen) && existeVertice(destino)
-	// POST CONDICION: existeArco(origen, destino)
-	void agregarArco(const int &origen, const int &destino, const C &costo);
-
-	// POST CONDICION: !existeArco(origen, destino)
-	void eliminarArco(const int &origen, const int &destino);
 
 	void vaciar();
 

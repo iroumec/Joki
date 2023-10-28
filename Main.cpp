@@ -576,7 +576,7 @@ void generarArchivoCircuito(const vector<unsigned int> & circuito, const double 
 
     // Se realiza la carga de cada aeropuerto en el circuito en el archivo.
     for (const auto &aeropuerto : circuito)
-        archivo << redDeViajes.nombreAeropuerto(aeropuerto - 1) << " -> ";
+        archivo << redDeViajes.nombreAeropuerto(aeropuerto - 1) << " -> \n";
     archivo << redDeViajes.nombreAeropuerto(circuito[0] - 1) << endl;
 
     archivo << "\nDistancia a recorrer: " << distancia << " kilómetros" << endl;
