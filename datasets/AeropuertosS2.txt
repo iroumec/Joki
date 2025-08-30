@@ -1,0 +1,5 @@
+Pucon,Pucon,CHI
+El prat,Barcelona,ESP
+Armando Tola,Calafate,ARG
+Logan,Boston,USA
+Humberto Delgado,Boston,USA

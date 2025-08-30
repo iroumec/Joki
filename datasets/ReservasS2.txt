@@ -1,0 +1,4 @@
+Logan,Pucon,United Airlines,146
+Pucon,Logan,United Airlines,146
+Armando Tola,Pucon,United Airlines,20
+Armando Tola,Humberto Delgado,LATAM,10

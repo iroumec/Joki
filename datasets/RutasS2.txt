@@ -1,0 +1,6 @@
+Armando Tola,Logan,10319.77,0,{United Airlines-146,Delta-120,}
+Logan,Humberto Delgado,306.45,1,{United Airlines-90,LATAM-120,Delta-120,}
+Armando Tola,Humberto Delgado,10137.15,0,{United Airlines-146,LATAM-120,}
+Armando Tola,Pucon,12495.88,0,{Avianca-124,United Airlines-146,Delta-120,}
+Logan,Pucon,12495.88,0,{United Airlines-146,}
+El prat,Pucon,506,1,{Aerolineas-80,}

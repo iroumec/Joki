@@ -1,0 +1,7 @@
+Ministro Pistarini,Jorge Newbery,1,1,{Aerolineas-120,}
+Jorge Newbery,La Araucania,6,1,{Aerolineas-120,}
+Jorge Newbery,Comodoro Benitez,3,1,{Aerolineas-120,}
+Comodoro Benitez,Pucon,2,1,{Aerolineas-120,}
+La Araucania,Ministro Pistarini,2,1,{Aerolineas-120,}
+Pucon,La Araucania,4,1,{Aerolineas-120,}
+Pucon,Ministro Pistarini,7,1,{Aerolineas-120,}
